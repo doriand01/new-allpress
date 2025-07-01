@@ -103,6 +103,12 @@ class Scraper:
         return self.starting_url in url or url.startswith('/')
 
     def scrape(self, domain: str, iterations: int = 10):
+        """
+        Scrapes the given domain for URLs and caches articles found on the site.
+        :param domain: The domain to scrape, e.g., 'https://cnn.com'.
+        :param iterations: The number of recursive iterations to perform.
+        :return:
+        """
         iteration = 0
         self.starting_url = domain
         start_page = requests.get(domain)
@@ -113,31 +119,39 @@ class Scraper:
         while iteration < iterations:
             iteration += 1
             logger.info(f'Scraping iteration {iteration}...')
+
+            # Initialize a new set to collect URLs found in this iteration.
             new_found_urls = set()
 
             for url in to_scrape:
                 if url in self.scraped_urls:
+                    # Skips the URL if it has already been scraped.
                     continue
                 try:
                     response = requests.get(url)
                     if response.status_code != 200:
+                        # If the response is not OK, log it and continue to the next URL.
                         logger.warning(f'Failed to retrieve {url}: HTTP {response.status_code}')
                         continue
                     if 'text/html' not in response.headers.get('Content-Type', ''):
+                        logger.debug(f'Skipping non-HTML content at {url}')
                         continue
 
                     soup = Soup(response.content, 'html.parser')
                     self.scraped_urls.add(url)
 
+                    # Caches the scraped URL if it's an article.
+                    # The confidence threshold of the ArticleDetector can be adjusted.
                     is_article, confidence_score = self.detector.detect_article(url, soup)
                     if is_article:
-                        logger.info(f'[ARTICLE] {url} ({confidence_score})')
+                        logger.debug(f'[ARTICLE] {url} ({confidence_score})')
                         self.cached_urls.add(url)
                         self.scraped_urls.add(url)
                     else:
-                        logger.info(f'[SKIP] {url} ({confidence_score})')
+                        logger.debug(f'[SKIP] {url} ({confidence_score})')
 
                     found_links = {urljoin(url, a['href']) for a in soup.find_all('a', href=True) if self.on_site(a['href'])}
+                    logger.info(f'Found {len(found_links)} links on {url}.')
                     new_found_urls.update(found_links)
 
                 except requests.RequestException as e:
@@ -145,6 +159,7 @@ class Scraper:
                     continue
 
             to_scrape = list(new_found_urls - self.scraped_urls)
+        logger.info(f'Iteration {iteration} done. Scraping {len(to_scrape)} URLs in Iteration {iteration+1}, scraped {len(self.scraped_urls)} URLs.')
 
 
 
