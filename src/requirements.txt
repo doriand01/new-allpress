@@ -1,4 +1,7 @@
 requests
 beautifulsoup4
+sentence_transformers
+torch
 regex
 mariadb
+spacy
