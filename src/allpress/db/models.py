@@ -24,6 +24,7 @@ class PageModel(Model):
     the database table.
     \n
     """
+    model_name = 'page'
 
     column_name_type_store = {
         'url'          : 'varchar(2048)',

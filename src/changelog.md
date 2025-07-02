@@ -1,5 +1,10 @@
 # July 2025
 
+### 0.2.1a (2025-07-01)
+
+- Begin work on DB and NLP processing
+- Add unwritten changes from previous commit to changelog
+
 ### 0.2.0a (2025-07-01)
 
 - Add `Article` object to represent articles
