@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup as Soup
 
 from allpress.util import logger
+from allpress.nlp.processors import Article, ArticleBatch
 
 
 class ArticleDetector:
@@ -142,7 +143,8 @@ class Scraper:
                     soup = Soup(response.content, 'html.parser')
                     self.scraped_urls.add(url)
                     title = soup.title.string if soup.title else 'No Title'
-                    new_soups[title] = (soup, url)
+                    article = Article(url, soup) ## This is where I was, finish method to serialize article using ArticleBatch objects! #########################
+                    new_soups[title] = (article, url)
 
                     # Caches the scraped URL if it's an article.
                     # The confidence threshold of the ArticleDetector can be adjusted.

@@ -1,6 +1,10 @@
 # July 2025
 
-### 0.2.1a (2025-07-01)
+### 0.2.2a (2025-07-03)
+
+
+
+### 0.2.1a (2025-07-02)
 
 - Begin work on DB and NLP processing
 - Add unwritten changes from previous commit to changelog

@@ -1,5 +1,6 @@
 import mariadb
 
+from hashlib import md5
 from allpress.settings import (
     DATABASE_USERNAME,
     DATABASE_PASSWORD,
@@ -8,7 +9,6 @@ from allpress.settings import (
 )
 
 from allpress.exceptions import *
-from allpress.db.models import Model, PageModel
 
 conn_params = {
     'user': DATABASE_USERNAME,
@@ -86,6 +86,87 @@ class Transactions:
 
         return f'CREATE TABLE {table_name} ({column_names_and_types_string[:-1]})'
 
+    @staticmethod
+    def generate_insertion_query(table_name: str, column_names: list) -> str:
+        """Generates a safe, parameterized SQL insertion query."""
+        placeholders = ', '.join(['%s'] * len(column_names))
+        columns = ', '.join(column_names)
+        return f'INSERT INTO {table_name} ({columns}) VALUES ({placeholders});'
+
+    @staticmethod
+    def insert_row(table: str, column_names: list, values: list):
+        insert_query = Transactions.generate_insertion_query(table, column_names)
+        cursor.execute(insert_query, values)
+
+
+class Model:
+
+    def __init__(self, **columns):
+        for name, value in zip(columns.keys(), columns.values()):
+            setattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{name}', value)
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __getitem__(self, val):
+        return getattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{val}')
+
+    def to_dict(self):
+        return {k: getattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{k}')
+                for k in self.__class__.column_names}
+
+    def save(self):
+        """Saves the current instance to the database."""
+        # This method should be implemented in subclasses to handle saving logic.
+        cls = self.__class__
+        serializable = self.to_dict()
+        columns = list(serializable.keys())
+        data = list(serializable.values())
+        Transactions.insert_row(cls.model_name, columns, data)
+
+
+class PageModel(Model):
+    """
+    PageModel: is the class which models the `page` table in the MariaDB database. \n
+    The page model contains columns which encapsulate the following data relating to \n
+    each indexed page: its url, the root url of the website, the `<p>` tag data \n
+    contained within the table, the language of the page, and translations for that \n
+    page. It is a child class of the Model class. All Model classes and child classes\n
+    have no publicly accessible functions, only attributes which help Model a row in \n
+    the database table.
+    \n
+    """
+    model_name = 'page'
+
+    column_name_type_store = {
+        'url': 'VARCHAR(1024)',
+        'text': 'TEXT',
+        'uid': 'VARCHAR(32) PRIMARY KEY',  # Unique identifier for the page
+        'rhet_vec': 'LONGBLOB',
+        'sem_vec': 'LONGBLOB',
+    }
+    column_names = [
+        'url',
+        'text',
+        'uid',  # Unique identifier for the page
+        'rhet_vec',
+        'sem_vec',
+    ]
+
+    def __init__(self, **columns):
+        super().__init__(**columns)
+        hashobj = md5()
+        hashobj.update(bytes(str(self.page_text).encode('utf-8')))
+        uid = hashobj.hexdigest()
+        self.page_uid = uid
+
+    def __str__(self):
+        return f'<{self.url}...>'
+
+    def to_dict(self):
+        return {k: getattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{k}')
+                for k in self.__class__.column_names}
+
 class DBSetup:
 
     @staticmethod
@@ -112,11 +193,11 @@ class DBSetup:
         # Sets up the tables required for use by the application.
         # First checks if the tables exist, and if not, creates then.
         if not DBSetup._check_table_exists('page'):
-            cursor.execute(Transactions.generate_create_table_query(
-                    table_name=PageModel.model_name,
-                    column_names_and_types=PageModel.column_name_type_store,
-                )
+            query = Transactions.generate_create_table_query(
+                table_name=PageModel.model_name,
+                column_names_and_types=PageModel.column_name_type_store,
             )
+            cursor.execute(query)
 
             connection.commit()
 
