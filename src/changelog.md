@@ -1,8 +1,14 @@
 # July 2025
 
-### 0.2.2a (2025-07-03)
 
+### 0.2.3a (2025-07-06)
 
+- Semantic and rhetorical embedding of articles now done in batches.
+- Other small optimizations to embedding calculations.
+
+### 0.2.2a (2025-07-05)
+
+- Added working implementation of DB io.
 
 ### 0.2.1a (2025-07-02)
 

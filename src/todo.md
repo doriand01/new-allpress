@@ -2,6 +2,8 @@
 
 ## In Progress
 
+- 023-004-013: Change rhetorical embedding and semantic embedding calculations.
+- 023-003-012: Fix article detection heuristics, as it currently has too many false positives.
 - 023-002-011: Finish refactoring allpress.db.models
 - 023-001-010: Fix primary key issue on article saves.
 - 022-002-009: Flesh out ArticleDetector heuristics.
@@ -22,7 +24,9 @@
 
 ## Bugs
 
-- 011-001: On second iteration, the starting domain appears in the `new_found_urls` list.
+- 023-003: AttributeErrors on saving to database.
 - 022-002: Primary key issue where duplicate articles are saved to the database. 
+- 011-001: On second iteration, the starting domain appears in the `new_found_urls` list.
+
 
 ## Abandoned

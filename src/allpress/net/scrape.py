@@ -119,7 +119,7 @@ class Scraper:
         to_scrape = list(initial_links)
 
         while iteration < iterations:
-            new_soups = {}
+            new_soups = []
             iteration += 1
             logger.info(f'Scraping iteration {iteration}...')
 
@@ -144,7 +144,7 @@ class Scraper:
                     self.scraped_urls.add(url)
                     title = soup.title.string if soup.title else 'No Title'
                     article = Article(url, soup) ## This is where I was, finish method to serialize article using ArticleBatch objects! #########################
-                    new_soups[title] = (article, url)
+                    new_soups.append(article)
 
                     # Caches the scraped URL if it's an article.
                     # The confidence threshold of the ArticleDetector can be adjusted.
@@ -165,7 +165,7 @@ class Scraper:
                     continue
 
             to_scrape = list(new_found_urls - self.scraped_urls)
-            yield new_soups
+            yield ArticleBatch(new_soups)
         logger.info(f'Iteration {iteration} done. Scraping {len(to_scrape)} URLs in Iteration {iteration+1}, scraped {len(self.scraped_urls)} URLs.')
 
 

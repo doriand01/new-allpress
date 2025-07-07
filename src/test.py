@@ -1,9 +1,16 @@
 import allpress
 
+from mariadb import IntegrityError
+
 a = allpress.net.scrape.Scraper()
 articles = []
-for soupdict in a.scrape('https://apnews.com'):
-    for article in soupdict.values(): # fix magic numbers later
-        page = article[0].serialize()
-        page.save()
-        print('hi')
+for batch in a.scrape('https://apnews.com'):
+    batch.generate_embeddings()
+    pages = batch.serialize()
+    for page in pages: # fix magic numbers later
+        try:
+            page.save()
+            print(f'Saved article from {page.page_url} with to the database.')
+        except IntegrityError as e:
+            print(f'Error saving article from {page.page_url}: {e}')
+
