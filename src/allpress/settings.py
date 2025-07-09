@@ -6,3 +6,6 @@ DATABASE_USERNAME = "test"
 DATABASE_PASSWORD = "default"
 DATABASE_HOST = "localhost"
 DATABASE_NAME = "test"
+
+NEWS_SOURCE_CATALOG_FILE = "C:\\Users\\preit\\OneDrive\\Desktop\\coding projects\\Allpress2\\src\\allpress\\sources.csv"
+CONFIG_FILE_PATH = "C:\\Users\\preit\\OneDrive\\Desktop\\coding projects\\Allpress2\\src\\allpress\\config.json"

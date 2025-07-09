@@ -5,6 +5,7 @@ import regex
 import spacy
 import io
 import torch
+import numpy as np
 from os import cpu_count
 
 from allpress.db.io import PageModel
@@ -122,7 +123,7 @@ class ArticleBatch(list):
         # 2. Batch-encode all sentences
         sentence_embeddings = embedder.encode(
             all_sentences,
-            convert_to_tensor=False,
+            convert_to_tensor=True,
             normalize_embeddings=True,
             show_progress_bar=True,
             device=device,

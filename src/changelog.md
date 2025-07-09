@@ -1,6 +1,12 @@
 # July 2025
 
 
+### 0.3.0a (2025-07-07)
+
+- Begin work on FAISS search.
+- Added config module for setting up application.
+- Add very basic CLI implementation.
+
 ### 0.2.3a (2025-07-06)
 
 - Semantic and rhetorical embedding of articles now done in batches.

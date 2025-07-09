@@ -126,6 +126,7 @@ class Model:
         Transactions.insert_row(cls.model_name, columns, data)
 
 
+
 class PageModel(Model):
     """
     PageModel: is the class which models the `page` table in the MariaDB database. \n
@@ -168,6 +169,38 @@ class PageModel(Model):
         return {k: getattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{k}')
                 for k in self.__class__.column_names}
 
+
+class NewsSourceModel(Model):
+    """
+    PageModel: is the class which models the `page` table in the MariaDB database. \n
+    The page model contains columns which encapsulate the following data relating to \n
+    each indexed page: its url, the root url of the website, the `<p>` tag data \n
+    contained within the table, the language of the page, and translations for that \n
+    page. It is a child class of the Model class. All Model classes and child classes\n
+    have no publicly accessible functions, only attributes which help Model a row in \n
+    the database table.
+    \n
+    """
+    model_name = 'newssource'
+
+    column_name_type_store = {
+        'name': 'VARCHAR(128)',
+        'url': 'VARCHAR(1024) UNIQUE',  # URL of the news source
+    }
+    column_names = [
+        'name',
+        'url',
+    ]
+
+    def __init__(self, **columns):
+        super().__init__(**columns)
+
+    def __str__(self):
+        return f'<{self.url}...>'
+
+    def to_dict(self):
+        return {k: getattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{k}')
+                for k in self.__class__.column_names}
 
 
 

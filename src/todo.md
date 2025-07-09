@@ -2,18 +2,16 @@
 
 ## In Progress
 
-- 023-004-013: Change rhetorical embedding and semantic embedding calculations.
-- 023-003-012: Fix article detection heuristics, as it currently has too many false positives.
+- 030-001-014: Begin work on FAISS indexing and searching.
 - 023-002-011: Finish refactoring allpress.db.models
 - 023-001-010: Fix primary key issue on article saves.
-- 022-002-009: Flesh out ArticleDetector heuristics.
 - 010-003-003: Bug test scraper
 - 010-004-004: Bug test article detector
 
-
-
 ## Completed
 
+- 023-004-013: Change rhetorical embedding and semantic embedding calculations. (0.3.0a)
+- 023-003-012: Fix article detection heuristics, as it currently has too many false positives. (0.3.0a)
 - 020-001-007: Begin work on semantic autoencoder (0.2.2a)
 - 022-001-008: Finish io for DB. Includes; creating tables, writing to tables, reading from tables for page model. (0.2.2a)
 - 010-005-005: Write documentation for Scraper (0.1.1a)
@@ -24,6 +22,7 @@
 
 ## Bugs
 
+- 030-004: Scraper fails to redirect away from pages on the same website but different subdomain.
 - 023-003: AttributeErrors on saving to database.
 - 022-002: Primary key issue where duplicate articles are saved to the database. 
 - 011-001: On second iteration, the starting domain appears in the `new_found_urls` list.

@@ -10,7 +10,7 @@ from allpress.nlp.processors import Article, ArticleBatch
 
 class ArticleDetector:
 
-    def __init__(self, confidence_threshold: float = 0.5):
+    def __init__(self, confidence_threshold: float = 0.7):
         self.year_url_regexes = [
             r'\d{4}/\d{2}/\d{2}',  # YYYY/MM/DD
             r'\d{4}-\d{2}-\d{2}',  # YYYY-MM-DD
@@ -23,26 +23,17 @@ class ArticleDetector:
         pass
 
     def detect_article(self, url: str, html_content: Soup) -> tuple[bool, float]:
-        """
-        Detects if the given URL and HTML content is likely to be an article.
-        Returns a confidence score with higher values the more heuristics
-        are satisfied, indicating a higher likelihood that the content is an article.
-        """
-
         self.url = url
         self.soup = html_content
 
-        # Initialize confidence score
         confidence_score = 0.0
-
-        # Check if the URL contains a date
         confidence_score += self._check_year_heuristic()
-
-        # Check if the URL contains "article" or "post"
         confidence_score += self._check_article_in_url_heuristic()
-
-        # Check if the HTML content has article tags
         confidence_score += self._check_has_article_tags()
+        confidence_score += self._check_text_density()
+        confidence_score += self._check_metadata_tags()
+        confidence_score += self._check_headline_structure()
+        confidence_score += self._check_blacklist_url()
 
         return confidence_score >= self.confidence_threshold, confidence_score
 
@@ -67,6 +58,27 @@ class ArticleDetector:
             return 0.1
         return 0.0
 
+    def _check_blacklist_url(self) -> float:
+        blacklist = ['category', 'tag', 'search', 'archive', 'feed', 'page']
+        if any(term in self.url.lower() for term in blacklist):
+            return -0.4  # penalize heavily
+        return 0.0
+
+    def _check_headline_structure(self) -> float:
+        if self.soup.find('h1') or self.soup.find('h2'):
+            return 0.1
+        return 0.0
+
+    def _check_metadata_tags(self) -> float:
+        meta_tags = self.soup.find_all('meta')
+        score = 0.0
+        for tag in meta_tags:
+            if tag.get('property') == 'og:type' and tag.get('content') == 'article':
+                score += 0.3
+            if tag.get('name') == 'article:published_time':
+                score += 0.2
+        return score
+
     def _check_has_article_tags(self) -> float:
         article_tags = self.soup.find_all('article')
         added_confidence = 0.0
@@ -85,6 +97,16 @@ class ArticleDetector:
 
         return added_confidence
 
+    def _check_text_density(self) -> float:
+        paragraphs = self.soup.find_all('p')
+        total_text = ' '.join(p.get_text() for p in paragraphs).strip()
+
+        if len(paragraphs) >= 5:
+            return 0.2
+        if len(total_text.split()) > 300:
+            return 0.2
+        return 0.0
+
 
 class Scraper:
 
@@ -93,7 +115,7 @@ class Scraper:
         self.cached_urls = set()  # URLs that have been cached from the website.
         self.found_urls = set()   # New URLs found on a web page during scraping.
         self.scraped_urls = set() # URLs that have been scraped and whose content has been downloaded.
-        self.detector = ArticleDetector(confidence_threshold=0.3)
+        self.detector = ArticleDetector(confidence_threshold=0.7)
 
     def on_site(self, url: str) -> bool:
         """
