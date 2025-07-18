@@ -1,4 +1,5 @@
 import faiss
+import numpy as np
 from allpress.settings import FAISS_INDEX_PATH
 
 
@@ -18,6 +19,6 @@ class FAISS_DB:
         self.is_initialized = True
         print(f"FAISS index initialized with dimension {dimension}.")
 
-    def add_vectors(self, vectors):
-        pass
-        """
+    def add_vectors(self, vectors: list[np.ndarray], ids: list[int]):
+        if len(vectors) != len(ids):
+            raise ValueError("Number of vectors must match number of IDs.")

@@ -1,12 +1,17 @@
 import os
 
 import torch
+import pickle
 from torch.utils.data import DataLoader, TensorDataset
 from sentence_transformers import SentenceTransformer as Model
+from io import BytesIO as IO
 
 from allpress.settings import CLASSIFICATION_MODELS_PATH
+from allpress.db.io import connection, cursor
 
 embedder = Model('paraphrase-multilingual-MiniLM-L12-v2')
+
+
 class AutoEncoder(torch.nn.Module):
     def __init__(self, input_dim=384, latent_dim=32):
         super().__init__()
@@ -65,57 +70,52 @@ def train_autoencoder(data_tensor, latent_dim=32, epochs=20, lr=1e-3, batch_size
     return model
 
 
-def train_semantic_autoencoder(data, latent_dim=32, epochs=50, lr=1e-3):
+def load_vectors_in_batches(column_name, batch_size=10):
     """
-    Train an autoencoder using semantic embeddings.
-
-    Args:
-        data (list of str): List of sentences to encode.
-        latent_dim (int): Dimension of the latent space.
-        epochs (int): Number of training epochs.
-        lr (float): Learning rate for the optimizer.
-
-    Returns:
-        AutoEncoder: Trained autoencoder model.
+    Generator that yields tensors from the specified column in the `page` table.
     """
-    # Convert sentences to embeddings
-    path = os.path.join(CLASSIFICATION_MODELS_PATH, 'semantic_model.pth')
+    query = f"SELECT {column_name} FROM page WHERE {column_name} IS NOT NULL;"
+    cursor.execute(query)
+
+    while True:
+        rows = cursor.fetchmany(batch_size)
+        if not rows:
+            break
+
+        for i, row in enumerate(rows):
+            blob = row[0]
+
+            if not isinstance(blob, bytes):
+                yield str(blob)
+            else:
+                yield torch.load(IO(blob))
+
+
+def train_autoencoder_from_db(column_name, model_filename, latent_dim=32, epochs=50, lr=1e-3):
+    """
+    Train and save autoencoder from database-stored embeddings.
+    """
+    path = os.path.join(CLASSIFICATION_MODELS_PATH, model_filename)
     if os.path.exists(path):
-        semantic_model = torch.load(path)
-        print("Loaded existing semantic model from disk.")
+        print(f"Loaded existing model: {model_filename}")
+        return torch.load(path)
 
-    else:
-        embeddings = embedder.encode(data)
-        data_tensor = torch.tensor(embeddings, dtype=torch.float32)
-        semantic_model = train_autoencoder(data_tensor, latent_dim, epochs, lr)
-        torch.save(semantic_model, path)
+    print(f"Training new autoencoder for {column_name}...")
+    cursor.execute('SELECT COUNT(*) FROM page;')
+    row_count = int(cursor.fetchone()[0])
+    data_tensor = torch.empty((row_count, 384), dtype=torch.float32)  # Assuming 384-dim vectors
 
-    return semantic_model
+    for i, vector in enumerate(load_vectors_in_batches(column_name)):
+        data_tensor[i] = torch.tensor(vector, dtype=torch.float32)
+
+    model = train_autoencoder(data_tensor, latent_dim, epochs, lr)
+    torch.save(model, path)
+    return model
 
 
-def train_rhetorical_autoencoder(data, latent_dim=32, epochs=50, lr=1e-3):
-    """
-    Train an autoencoder using rhetorical embeddings.
+def train_semantic_autoencoder(latent_dim=32, epochs=50, lr=1e-3):
+    return train_autoencoder_from_db('sem_vec', 'semantic_model.pth', latent_dim, epochs, lr)
 
-    Args:
-        data (list of str): List of sentences to encode.
-        latent_dim (int): Dimension of the latent space.
-        epochs (int): Number of training epochs.
-        lr (float): Learning rate for the optimizer.
 
-    Returns:
-        AutoEncoder: Trained autoencoder model.
-    """
-    # Convert sentences to embeddings
-    path = os.path.join(CLASSIFICATION_MODELS_PATH, 'rhetoric_model.pth')
-    if os.path.exists(path):
-        rhetoric_model = torch.load(path)
-        print("Loaded existing rhetoric model from disk.")
-
-    else:
-        embeddings = embedder.encode(data)
-        data_tensor = torch.tensor(embeddings, dtype=torch.float32)
-        rhetoric_model = train_autoencoder(data_tensor, latent_dim, epochs, lr)
-        torch.save(rhetoric_model, path)
-
-    return rhetoric_model
+def train_rhetorical_autoencoder(latent_dim=32, epochs=50, lr=1e-3):
+    return train_autoencoder_from_db('rhet_vec', 'rhetoric_model.pth', latent_dim, epochs, lr)

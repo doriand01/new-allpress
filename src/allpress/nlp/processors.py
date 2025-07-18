@@ -16,7 +16,7 @@ torch.set_num_threads(cpu_count())
 entity_nlp = spacy.load('xx_ent_wiki_sm')
 sentence_nlp = spacy.load('xx_sent_ud_sm')
 embedder = Model('paraphrase-multilingual-MiniLM-L12-v2')
-buffer = io.BytesIO()
+
 
 
 
@@ -43,7 +43,7 @@ class Article:
 
     def _blobify(self, embedding: Tensor):
         """Converts a PyTorch tensor to a bytes-like object."""
-        buffer.seek(0)
+        buffer = io.BytesIO()
         torch.save(embedding, buffer)
         return buffer.getvalue()
 

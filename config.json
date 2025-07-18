@@ -1,0 +1,7 @@
+{
+    "is_initialized": true,
+    "application_tables": [
+        "page",
+        "sources"
+    ]
+}

@@ -1,5 +1,8 @@
 # July 2025
 
+### 0.3.1a (2025-07-17)
+
+- Fixed IO bug that caused tensors saved to DB to be corrupted.
 
 ### 0.3.0a (2025-07-07)
 

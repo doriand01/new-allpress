@@ -6,6 +6,9 @@ from bs4 import BeautifulSoup as Soup
 
 from allpress.util import logger
 from allpress.nlp.processors import Article, ArticleBatch
+from allpress.net.request_managers import HTTPRequestPoolManager
+
+manager = HTTPRequestPoolManager()
 
 
 class ArticleDetector:
@@ -125,7 +128,7 @@ class Scraper:
             return False
         return self.starting_url in url or url.startswith('/')
 
-    def scrape(self, domain: str, iterations: int = 10):
+    def scrape(self, domain: str, iterations: int = 2):
         """
         Scrapes the given domain for URLs and caches articles found on the site.
         :param domain: The domain to scrape, e.g., 'https://cnn.com'.
@@ -147,43 +150,43 @@ class Scraper:
 
             # Initialize a new set to collect URLs found in this iteration.
             new_found_urls = set()
+            responses = manager.execute_request_batch(to_scrape)
 
-            for url in to_scrape:
-                if url in self.scraped_urls:
+            for response in responses:
+                if response.url in self.scraped_urls:
                     # Skips the URL if it has already been scraped.
                     continue
                 try:
-                    response = requests.get(url)
                     if response.status_code != 200:
                         # If the response is not OK, log it and continue to the next URL.
-                        logger.warning(f'Failed to retrieve {url}: HTTP {response.status_code}')
+                        logger.warning(f'Failed to retrieve {response.url}: HTTP {response.status_code}')
                         continue
                     if 'text/html' not in response.headers.get('Content-Type', ''):
-                        logger.debug(f'Skipping non-HTML content at {url}')
+                        logger.debug(f'Skipping non-HTML content at {response.url}')
                         continue
 
                     soup = Soup(response.content, 'html.parser')
-                    self.scraped_urls.add(url)
+                    self.scraped_urls.add(response.url)
                     title = soup.title.string if soup.title else 'No Title'
-                    article = Article(url, soup) ## This is where I was, finish method to serialize article using ArticleBatch objects! #########################
+                    article = Article(response.url, soup) ## This is where I was, finish method to serialize article using ArticleBatch objects! #########################
                     new_soups.append(article)
 
                     # Caches the scraped URL if it's an article.
                     # The confidence threshold of the ArticleDetector can be adjusted.
-                    is_article, confidence_score = self.detector.detect_article(url, soup)
+                    is_article, confidence_score = self.detector.detect_article(response.url, soup)
                     if is_article:
-                        logger.debug(f'[ARTICLE] {url} ({confidence_score})')
-                        self.cached_urls.add(url)
-                        self.scraped_urls.add(url)
+                        logger.debug(f'[ARTICLE] {response.url} ({confidence_score})')
+                        self.cached_urls.add(response.url)
+                        self.scraped_urls.add(response.url)
                     else:
-                        logger.debug(f'[SKIP] {url} ({confidence_score})')
+                        logger.debug(f'[SKIP] {response.url} ({confidence_score})')
 
-                    found_links = {urljoin(url, a['href']) for a in soup.find_all('a', href=True) if self.on_site(a['href'])}
-                    logger.info(f'Found {len(found_links)} links on {url}.')
+                    found_links = {urljoin(response.url, a['href']) for a in soup.find_all('a', href=True) if self.on_site(a['href'])}
+                    logger.info(f'Found {len(found_links)} links on {response.url}.')
                     new_found_urls.update(found_links)
 
                 except requests.RequestException as e:
-                    logger.error(f'Error fetching {url}: {e}')
+                    logger.error(f'Error fetching {response.url}: {e}')
                     continue
 
             to_scrape = list(new_found_urls - self.scraped_urls)

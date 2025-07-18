@@ -1,14 +1,20 @@
 import mariadb
+import faiss
 
 from hashlib import md5
 from allpress.settings import (
     DATABASE_USERNAME,
     DATABASE_PASSWORD,
     DATABASE_HOST,
-    DATABASE_NAME
+    DATABASE_NAME,
+    FAISS_INDEX_PATH
 )
+from allpress.util import logging
+
 
 from allpress.exceptions import *
+
+import numpy as np
 
 conn_params = {
     'user': DATABASE_USERNAME,
@@ -19,7 +25,6 @@ conn_params = {
 
 connection = mariadb.connect(**conn_params)
 cursor = connection.cursor()
-
 
 class Transactions:
     """
@@ -81,7 +86,7 @@ class Transactions:
                 continue
             elif foreign_key and not reference_table:
                 logging.critical(f'Reference table not provided for foreign key {foreign_key}! Abort.')
-                raise ForeignKeyWithoutReferenceError(f'Reference table not provided for foreign key {foreign_key}')
+                raise ForeignKeyWithoutReference(f'Reference table not provided for foreign key {foreign_key}')
             column_names_and_types_string += f'{key} {val},'
 
         return f'CREATE TABLE {table_name} ({column_names_and_types_string[:-1]})'
@@ -201,6 +206,36 @@ class NewsSourceModel(Model):
     def to_dict(self):
         return {k: getattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{k}')
                 for k in self.__class__.column_names}
+
+class VectorDB:
+
+    def __init__(self):
+        self.rhet_index = faiss.IndexIDMap(faiss.IndexFlatL2(32))
+        self.sem_index = faiss.IndexIDMap(faiss.IndexFlatL2(32))
+
+
+    def _md5_to_uid(self, hash):
+        return int(f'0x{hash[:15]}', 16)
+
+    def insert_vectors(self, rhet_vecs: list[np.array], sem_vecs: list[np.array], uids: list[str]):
+
+        for i in range(len(uids)):
+            uids[i] = self._md5_to_uid(uids[i])
+
+        print("=== DEBUG ===")
+        print("rhet_vecs (type):", type(rhet_vecs))
+        print("rhet_vecs (shape):", getattr(rhet_vecs, "shape", None))
+        print("rhet_vecs (dtype):", getattr(rhet_vecs, "dtype", None))
+        print("rhet_vecs (first 1):", rhet_vecs[0])
+        print("uids (type):", type(uids))
+        print("uids (shape):", getattr(uids, "shape", None))
+        print("uids (dtype):", getattr(uids, "dtype", None))
+        print("================")
+        self.rhet_index.add_with_ids(rhet_vecs, np.array(uids, dtype='int64'))
+        self.sem_index.add_with_ids(sem_vecs, np.array(uids, dtype='int64'))
+        faiss.write_index(self.rhet_index, FAISS_INDEX_PATH.replace('.faiss', '_rhetoric.faiss'))
+        faiss.write_index(self.sem_index, FAISS_INDEX_PATH.replace('.faiss', '_semantic.faiss'))
+
 
 
 
