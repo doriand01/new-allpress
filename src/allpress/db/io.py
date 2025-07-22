@@ -218,7 +218,7 @@ class VectorDB:
 
     def __init__(self):
         self.rhet_index = faiss.IndexIDMap(faiss.IndexFlatL2(32))
-        self.sem_index = faiss.IndexIDMap(faiss.IndexFlatL2(32))
+        self.sem_index = faiss.IndexIDMap(faiss.IndexFlatL2(128))
 
 
     def _md5_to_uid(self, hash):

@@ -106,7 +106,7 @@ def train_autoencoder_from_db(column_name, model_filename, latent_dim=32, epochs
     data_tensor = torch.empty((row_count, 768 if column_name == 'sem_vec' else 384), dtype=torch.float32)  # Assuming 384-dim vectors
 
     for i, vector in enumerate(load_vectors_in_batches(column_name)):
-        data_tensor[i] = torch.tensor(vector, dtype=torch.float32)
+        data_tensor[i] = torch.tensor(vector, dtype=torch.float32).squeeze(0)
 
     model = train_autoencoder(data_tensor, latent_dim, epochs, lr)
     torch.save(model, path)

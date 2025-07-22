@@ -50,8 +50,8 @@ class CLI:
                 else:
                     self.scrape_sources()
             elif command == "train":
-                train_semantic_autoencoder(32, 500, 1e-3)
-                train_rhetorical_autoencoder(32, 500, 1e-3)
+                train_semantic_autoencoder(128, 100, 1e-3)
+                train_rhetorical_autoencoder(32, 100, 1e-3)
             elif command == "build vectordb":
                 sem_autoencoder = torch.load(r"C:\Users\preit\OneDrive\Desktop\coding projects\Allpress2\src\allpress\models\autoencoders\semantic_model.pth", weights_only=False)
                 rhet_autoencoder = torch.load(r"C:\Users\preit\OneDrive\Desktop\coding projects\Allpress2\src\allpress\models\autoencoders\rhetoric_model.pth", weights_only=False)
@@ -59,6 +59,7 @@ class CLI:
                 sem_vecs = np.stack([sem_autoencoder.encode(vec).detach().numpy() for vec in load_vectors_in_batches('sem_vec')]).astype("float32")
                 rhet_vecs = np.stack([rhet_autoencoder.encode(vec).detach().numpy() for vec in load_vectors_in_batches('rhet_vec')]).astype("float32")
                 rhet_vecs = rhet_vecs.squeeze(1)
+                sem_vecs = sem_vecs.squeeze(1)
                 uids = [uid for uid in load_vectors_in_batches('uid')]
 
                 vector_db.insert_vectors(rhet_vecs, sem_vecs, uids)

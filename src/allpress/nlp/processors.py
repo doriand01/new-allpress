@@ -196,7 +196,7 @@ class ArticleBatch(list):
     def generate_embeddings(self):
         all_semantic = [article.semantic for article in self]
 
-        semantic_embeddings = embedder.encode(all_semantic, convert_to_tensor=True, show_progress_bar=False)
+        semantic_embeddings = embedder.encode(all_semantic, convert_to_tensor=True, show_progress_bar=True)
         self.embed_rhetorical()
 
         for i, article in enumerate(self):

@@ -1,5 +1,9 @@
 # July 2025
 
+### 0.3.3a (2025-07-22)
+
+- Fix bug where semantic embeddings were still generated using paraphrase, rather than LaBSE
+
 ### 0.3.2a (2025-07-22)
 
 - Separate model for semantic and rhetorical embedding.
