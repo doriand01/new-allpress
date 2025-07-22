@@ -1,5 +1,6 @@
 import mariadb
 import faiss
+import redis
 
 from hashlib import md5
 from allpress.settings import (
@@ -25,6 +26,12 @@ conn_params = {
 
 connection = mariadb.connect(**conn_params)
 cursor = connection.cursor()
+
+redis_cursor = redis.Redis(
+    host='localhost',
+    port=6379,
+    decode_responses=True
+)
 
 class Transactions:
     """
@@ -215,7 +222,9 @@ class VectorDB:
 
 
     def _md5_to_uid(self, hash):
-        return int(f'0x{hash[:15]}', 16)
+        faiss_id = int(f'0x{hash[:15]}', 16)
+        redis_cursor.set(str(faiss_id), hash)
+        return faiss_id
 
     def insert_vectors(self, rhet_vecs: list[np.array], sem_vecs: list[np.array], uids: list[str]):
 

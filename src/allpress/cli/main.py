@@ -14,11 +14,11 @@ class CLI:
     def __init__(self):
         pass
 
-    def scrape_sources(self):
+    def scrape_sources(self, start_from=0):
         cursor.execute("SELECT * FROM newssource;")
         sources = cursor.fetchall()[1:]
         scraper = scrape.Scraper()
-        for source, url in sources:
+        for source, url in sources[start_from:]:
             print(f"Scraping {source} from {url}...")
             try:
                 scraped = scraper.scrape(url, iterations=2)
@@ -44,8 +44,11 @@ class CLI:
             command = input("allpress>: ").strip().lower()
             if not command:
                 check_config()
-            elif command == "scrape":
-                self.scrape_sources()
+            elif "scrape" in command:
+                if len(command.split(" ")) > 1:
+                    self.scrape_sources(start_from=int(command.split(" ")[1]))
+                else:
+                    self.scrape_sources()
             elif command == "train":
                 train_semantic_autoencoder(32, 500, 1e-3)
                 train_rhetorical_autoencoder(32, 500, 1e-3)

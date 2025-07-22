@@ -2,6 +2,7 @@
 
 ## In Progress
 
+- 031-001-017: Scraper should respect robots.txt.
 - 030-002-015: Write documentation and type hinting for entire codebase.
 - 030-001-014: Begin work on FAISS indexing and searching.
 - 023-002-011: Finish refactoring allpress.db.models

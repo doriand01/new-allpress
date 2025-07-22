@@ -16,6 +16,7 @@ torch.set_num_threads(cpu_count())
 entity_nlp = spacy.load('xx_ent_wiki_sm')
 sentence_nlp = spacy.load('xx_sent_ud_sm')
 embedder = Model('paraphrase-multilingual-MiniLM-L12-v2')
+sem_embedder = Model('LaBSE')
 
 
 
@@ -141,6 +142,56 @@ class ArticleBatch(list):
             idx += count
 
         print("Finished embedding rhetorical vectors.")
+
+    def embed_semantic(self, device='cuda' if torch.cuda.is_available() else 'cpu'):
+        """
+        Efficiently computes rhetorical embeddings for all articles in the batch.
+        Sentences from all articles are embedded in a single batch for speed.
+        """
+        embedder.to(device)
+
+        type_weights = {
+            "PERSON": 1.0,
+            "ORG": 0.9,
+            "GPE": 0.8,
+            "DATE": 0.3,
+            "CARDINAL": 0.1,
+            "ORDINAL": 0.1,
+            "MONEY": 0.3,
+        }
+
+        all_entities = []
+        entity_counts = []
+
+        if not entities:
+            print("No semantic content found. Skipping embedding.")
+            return
+
+        # 2. Batch-encode all sentences
+        entities = []
+        weights = []
+
+        for article in self:
+            for ent in article.document.ents:
+                text = f"{ent.label_}: {ent.text}"
+                weight = type_weights.get(ent.label_, 0.5)  # fallback default weight
+                entities.append(text)
+                weights.append(weight)
+
+        if not entities:
+            return None
+
+        embeddings = sem_embedder.encode(entities, convert_to_tensor=True)
+
+        # Normalize weights to sum to 1
+        weight_tensor = torch.tensor(weights, dtype=torch.float32)
+        weight_tensor = weight_tensor / weight_tensor.sum()
+
+        # Weighted sum
+        pooled = torch.sum(embeddings * weight_tensor[:, None], dim=0, keepdim=True)
+        print("Finished embedding rhetorical vectors.")
+        return pooled
+
 
     def generate_embeddings(self):
         all_semantic = [article.semantic for article in self]

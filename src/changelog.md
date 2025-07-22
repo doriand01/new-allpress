@@ -1,5 +1,10 @@
 # July 2025
 
+### 0.3.2a (2025-07-22)
+
+- Separate model for semantic and rhetorical embedding.
+- Rhetorical embedding now uses LaBSE, autoencoder for rhetorical embedded in 128-dim instead of 32.
+
 ### 0.3.1a (2025-07-17)
 
 - Fixed IO bug that caused tensors saved to DB to be corrupted.

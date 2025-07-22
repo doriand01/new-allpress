@@ -103,7 +103,7 @@ def train_autoencoder_from_db(column_name, model_filename, latent_dim=32, epochs
     print(f"Training new autoencoder for {column_name}...")
     cursor.execute('SELECT COUNT(*) FROM page;')
     row_count = int(cursor.fetchone()[0])
-    data_tensor = torch.empty((row_count, 384), dtype=torch.float32)  # Assuming 384-dim vectors
+    data_tensor = torch.empty((row_count, 768 if column_name == 'sem_vec' else 384), dtype=torch.float32)  # Assuming 384-dim vectors
 
     for i, vector in enumerate(load_vectors_in_batches(column_name)):
         data_tensor[i] = torch.tensor(vector, dtype=torch.float32)
@@ -113,7 +113,7 @@ def train_autoencoder_from_db(column_name, model_filename, latent_dim=32, epochs
     return model
 
 
-def train_semantic_autoencoder(latent_dim=32, epochs=50, lr=1e-3):
+def train_semantic_autoencoder(latent_dim=128, epochs=50, lr=1e-3):
     return train_autoencoder_from_db('sem_vec', 'semantic_model.pth', latent_dim, epochs, lr)
 
 
