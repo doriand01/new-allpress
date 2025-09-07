@@ -1,0 +1,12 @@
+[INFO];11-Jul-25 00:48:07: Loading faiss with AVX2 support.
+[INFO];11-Jul-25 00:48:07: Successfully loaded faiss with AVX2 support.
+[INFO];11-Jul-25 00:48:07: Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+[INFO];11-Jul-25 00:48:07: Use pytorch device_name: cpu
+[INFO];11-Jul-25 00:48:07: Load pretrained SentenceTransformer: paraphrase-multilingual-MiniLM-L12-v2
+[INFO];11-Jul-25 00:49:07: Loading faiss with AVX2 support.
+[INFO];11-Jul-25 00:49:07: Successfully loaded faiss with AVX2 support.
+[INFO];11-Jul-25 00:49:07: Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+[INFO];11-Jul-25 00:49:07: Use pytorch device_name: cpu
+[INFO];11-Jul-25 00:49:07: Load pretrained SentenceTransformer: paraphrase-multilingual-MiniLM-L12-v2
+[INFO];11-Jul-25 00:49:18: Use pytorch device_name: cpu
+[INFO];11-Jul-25 00:49:18: Load pretrained SentenceTransformer: paraphrase-multilingual-MiniLM-L12-v2

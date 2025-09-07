@@ -1,0 +1,155 @@
+Continent,Country,Official Name,Headquarters,Website,Subdomains,Languages,Notes
+Europe,Russia,Sputnik,Moscow,http://sputniknews.com,,EN; RU,State ownership by Rossiya Segodnya
+Europe,Russia,Russia Today,Moscow,http://www.rt.com,"actualidad, arabic, russian, de, francais","EN, RU, AR, ES, DE, FR","Private ownership by ""TV-Anosti"", state funded"
+Europe,Russia,TASS,Moscow,http://tass.ru,,RU,Russian news agency founded in 1904. Currently wholly owned by Russian government
+Europe,Ukraine,TSN,N/A,http://tsn.ua,,UK,Unknown ownership
+Europe,Ukraine,Ukrains'ka Pravda,N/A,https://www.pravda.com.ua,,"UK, RU, EN",Major Ukrainian online paper
+Europe,United Kingdom,British Broadcasting Corporation,London,http://www.bbc.com,,EN,Public service broadcaster
+Europe,United Kingdom,Reuters,London,https://www.reuters.com,,EN,Major international news agency
+Europe,Sweden,Sveriges Radio,Stockholm,https://sverigesradio.se,,"SV, FI",National publicly funded radio/news org
+Europe,Italy,Corriere della Sera,Milan,https://Corriere.it,,IT,Italian newspaper of record
+Europe,Italy,ANSA,Rome,https://www.ansa.it,"IT, EN",,Italian national news agency
+Europe,Greece,Athens-Macedonian News Agency,Athens,https://www.amna.gr,,"EL, EN",State news agency
+Europe,Ireland,The Irish Times,Dublin,https://www.irishtimes.com,,EN,One of the oldest newspapers in the British Isles
+Europe,Spain,El Pais,Madrid,https://elpais.com,english,"ES, EN",Second largest paper in Spain
+Europe,Spain,EFE,Madrid,https://www.efe.com,,"ES, EN, PT, AR","Spanish news agency, fourth largest worldwide"
+Europe,France,Agence France-Presse,Paris,https://www.afp.com,,"FR, EN, AR, PT, ES, DE",World's oldest news agency (founded 1835)
+Europe,France,Le Monde,Paris,https://www.lemonde.fr,,FR,French newspaper of record
+Europe,Germany,Deutsche Presse-Agentur (DPA),Hamburg,https://www.dpa.com,,"DE, EN",Largest German news agency
+Europe,Germany,Deutsche Welle,Bonn,https://www.dw.com,,"DE, EN, ES, AR, ZH",International broadcaster
+Europe,Netherlands,ANP,The Hague,https://www.anp.nl,,"NL, EN",Dutch national news agency
+Europe,Belgium,Belga,Brussels,https://www.belga.be,,"NL, FR, EN",Belgian news agency
+Europe,Switzerland,Swiss Broadcasting Corporation,Bern,https://www.srf.ch,,"DE, FR, IT, RM",Public broadcaster
+Europe,Austria,APA,Vienna,https://www.apa.at,,"DE, EN",Austrian Press Agency
+Europe,Norway,NTB,Oslo,https://www.ntb.no,,"NO, EN",Norwegian news agency
+Europe,Denmark,Ritzau,Copenhagen,https://ritzau.dk,,"DA, EN",Danish news agency
+Europe,Finland,STT,Helsinki,https://www.stt.fi,,"FI, SV, EN",Finnish news agency
+Europe,Poland,PAP,Warsaw,https://www.pap.pl,,"PL, EN",Polish Press Agency
+Europe,Czech Republic,CTK,Prague,https://www.ctk.cz,,"CS, EN",Czech news agency
+Europe,Hungary,MTI,Budapest,https://www.mti.hu,,"HU, EN",Hungarian news agency
+Europe,Romania,Agerpres,Bucharest,https://www.agerpres.ro,,"RO, EN",Romanian national news agency
+Europe,Portugal,Lusa,Lisbon,https://www.lusa.pt,,"PT, EN",Portuguese news agency
+Europe,Albania,Albanian Telegraphic Agency,Tirana,https://www.ata.gov.al,,"SQ, EN",State news agency
+Europe,Slovakia,TASR,Bratislava,https://www.tasr.sk,,"SK, EN",Slovak news agency
+Europe,Slovenia,STA,Ljubljana,https://www.sta.si,,"SL, EN",Slovenian Press Agency
+Europe,Croatia,HINA,Zagreb,https://www.hina.hr,,"HR, EN",Croatian news agency
+Europe,Serbia,Tanjug,Belgrade,https://tanjug.rs,,"SR, EN",Serbian news agency
+Europe,Bosnia,FENA,Sarajevo,https://fena.ba,,"BS, EN",Federal news agency
+Europe,North Macedonia,MIA,Skopje,https://mia.mk,,"MK, EN",Macedonian Information Agency
+Europe,Montenegro,MINA,Podgorica,https://mina.news,,"ME, EN",Montenegrin news agency
+Europe,Bulgaria,BTA,Sofia,https://www.bta.bg,,"BG, EN",Bulgarian Telegraph Agency
+Europe,Moldova,Moldpres,Chișinău,https://moldpres.md,,"RO, RU, EN",Moldovan news agency
+Europe,Belarus,BelTA,Minsk,https://eng.belta.by,,"BE, RU, EN",Belarusian Telegraph Agency
+Europe,Lithuania,ELTA,Vilnius,https://elta.lt,,"LT, EN",Lithuanian news agency
+Europe,Latvia,LETA,Riga,https://leta.lv,,"LV, EN",Latvian news agency
+Europe,Estonia,BNS,Tallinn,https://bns.ee,,"ET, EN",Baltic News Service
+Europe,Iceland,RUV,Reykjavik,https://www.ruv.is,,"IS, EN",National broadcaster
+Europe,Luxembourg,Wort,Luxembourg City,https://www.wort.lu,,"LU, FR, DE, EN",Major newspaper
+Europe,Malta,DOI,Valletta,https://www.doi.gov.mt,,"MT, EN",Department of Information
+Europe,Cyprus,CNA,Nicosia,https://www.cna.org.cy,,"EL, EN",Cyprus News Agency
+Asia,South Korea,Yonhap News Agency,Seoul,http://yna.co.kr,"ar, en, cn, sp, fr, jp","KO, EN, AR, ZH, JA, FR, ES",Public ownership
+Asia,North Korea,Uriminzokkiri,N/A,http://uriminzokkiri.com,,"KO, EN, RU, ZH, JA",State ownership
+Asia,China,China Global Television Network,Beijing,http://cgtn.com,,"EN, ES, FR, AR, RU",Public ownership
+Asia,China,Xinhua News Agency,Beijing,http://news.cn,english,"ZH, EN",State news agency
+Asia,Japan,Nippon Housou Kyoukai,Tokyo,http://www.nhk.or.jp,,"JP, ZH, KO, EN",Public ownership
+Asia,Japan,Kyodo News,Tokyo,https://english.kyodonews.net,,"JP, EN",News agency
+Asia,Iran,Islamic Republic News Agency,Tehran,http://irna.ir,"en, ar, tr, es, ru, ur, de, fr, zh","FA, EN, AR, TR, ES, RU, UR, DE, FR, ZH",State news agency
+Asia,Palestine,Palestinian News and Agency Information,Ramallah,https://wafa.ps,"english, french, hebrew","AR, EN, FR, HE",News agency of the Palestinian national authority
+Asia,Azerbaijan,Azerbaijan Television,Baku,https://www.aztv.az,,"AZ, EN, RU",State news Agency of Azerbaijan
+Asia,India,All India Radio,New Delhi,https://newsonair.gov.in,,"EN, HI",Public broadcaster
+Asia,India,Press Trust of India,New Delhi,https://www.ptinews.com,,"EN, HI",National news agency
+Asia,India,ANI,New Delhi,https://www.aninews.in,,"EN, HI",News agency
+Asia,Saudi Arabia,Al Arabiya,Riyadh,https://alarabiya.net,"english, farsi, urdu","AR, FA, EN, UR","International news agency from KSA, based in Dubai"
+Asia,Saudi Arabia,Saudi Press Agency,Riyadh,https://www.spa.gov.sa,,"AR, EN, ZH, RU, FA",Official state news agency of KSA
+Asia,Laos,Lao News Agency,Vientiane,http://kpl.gov.la,,"LO, EN, FR",Official state news agency of Lao PDR
+Asia,Qatar,Al Jazeera,Doha,https://www.aljazeera.com,,"AR, EN",International news network
+Asia,Turkey,Anadolu Agency,Ankara,https://www.aa.com.tr,,"TR, EN, AR, RU, FR, DE, ES",State news agency
+Asia,Israel,Israel Broadcasting Corporation,Jerusalem,https://www.kan.org.il,,"HE, AR, EN, RU",Public broadcaster
+Asia,Thailand,Thai News Agency,Bangkok,https://www.tna.mcot.net,,"TH, EN",National news agency
+Asia,Vietnam,Vietnam News Agency,Hanoi,https://en.vietnamplus.vn,,"VI, EN, FR, ES, ZH, JP, KH, LO",State news agency
+Asia,Indonesia,ANTARA,Jakarta,https://en.antaranews.com,,"ID, EN",National news agency
+Asia,Malaysia,Bernama,Kuala Lumpur,https://www.bernama.com,,"MS, EN, ZH, TA",National news agency
+Asia,Singapore,Channel NewsAsia,Singapore,https://www.channelnewsasia.com,,"EN, ZH, MS, TA",International news channel
+Asia,Philippines,Philippine News Agency,Manila,https://www.pna.gov.ph,,"EN, FIL",Official news agency
+Asia,Pakistan,Associated Press of Pakistan,Islamabad,https://www.app.com.pk,,"EN, UR",National news agency
+Asia,Bangladesh,Bangladesh Sangbad Sangstha,Dhaka,https://www.bssnews.net,,"BN, EN",National news agency
+Asia,Sri Lanka,Lanka Broadcasting Corporation,Colombo,https://www.slbc.lk,,"SI, TA, EN",State broadcaster
+Asia,Afghanistan,Bakhtar News Agency,Kabul,https://bakhtarnews.af,,"PS, DA, EN",State news agency
+Asia,Nepal,Rastriya Samachar Samiti,Kathmandu,https://rss.com.np,,"NE, EN",National news agency
+Asia,Myanmar,Myanmar News Agency,Naypyidaw,https://www.mna.gov.mm,,"MY, EN",State news agency
+Asia,Cambodia,Agence Kampuchea Presse,Phnom Penh,https://www.akp.gov.kh,,"KM, EN, FR",State news agency
+Asia,UAE,WAM,Abu Dhabi,https://wam.ae,,"AR, EN",Emirates News Agency
+Asia,UAE,Gulf News,Dubai,https://gulfnews.com,,EN,Major newspaper
+Asia,Kuwait,KUNA,Kuwait City,https://www.kuna.net.kw,,"AR, EN",Kuwait News Agency
+Asia,Bahrain,BNA,Manama,https://www.bna.bh,,"AR, EN",Bahrain News Agency
+Asia,Oman,ONA,Muscat,https://omannews.gov.om,,"AR, EN",Oman News Agency
+Asia,Jordan,Petra,Amman,https://petra.gov.jo,,"AR, EN",Jordan News Agency
+Asia,Lebanon,National News Agency,Beirut,https://nna-leb.gov.lb,,"AR, EN, FR",State news agency
+Asia,Syria,SANA,Damascus,https://sana.sy,,"AR, EN, FR, RU",Syrian Arab News Agency
+Asia,Iraq,INA,Baghdad,https://ina.iq,,"AR, EN",Iraqi News Agency
+Asia,Yemen,SABA,Sana'a,https://www.saba.ye,,"AR, EN",Yemeni news agency
+North America,United States,Voice of America,"Washington, D.C.",https://voanews.com,,EN,Dozens of languages and local international versions
+North America,United States,Associated Press,New York,https://apnews.com,,EN,Major international news agency
+North America,United States,United States Africa Command,Stuttgart,http://www.africom.mil,,EN,Official news and information page of the United States Africa Command
+North America,United States,CNN,Atlanta,https://www.cnn.com,,EN,Cable news network
+North America,United States,Fox News,New York,https://www.foxnews.com,,EN,Cable news network
+North America,United States,NPR,"Washington, D.C.",https://www.npr.org,,EN,National Public Radio
+North America,United States,PBS,Arlington,https://www.pbs.org,,EN,Public Broadcasting Service
+North America,Canada,La Presse,Montreal,https://lapresse.ca,,FR,Private ownership
+North America,Canada,CBC,Toronto,https://www.cbc.ca,,"EN, FR",Public broadcaster
+North America,Canada,The Globe and Mail,Toronto,https://www.theglobeandmail.com,,EN,National newspaper
+North America,Canada,Canadian Press,Toronto,https://www.thecanadianpress.com,,"EN, FR",National news agency
+North America,Cuba,Granma,Havana,http://www.granma.cu,en,ES,Official paper of the Communist Party of Cuba
+North America,Cuba,Prensa Latina,Havana,https://www.prensa-latina.cu,"frances, italiano","ES, FR, RU",State news agency
+North America,Mexico,El Universal (Mexico),Mexico City,https://www.eluniversal.com.mx,,ES,Mexican edition of El Universal
+North America,Mexico,Notimex,Mexico City,https://www.notimex.gob.mx,,ES,Mexican news agency
+South America,Venezuela,teleSUR,Caracas,http://telesurtv.net,,ES,"State/public ownership, with funding from Nicaragua and Cuba"
+South America,Venezuela,El Universal (Venezuela),Caracas,https://www.eluniversal.com,,ES,Venezuelan paper of record
+South America,Argentina,Clarin Digital,Buenos Aires,http://www.clarin.com,,ES,Major newspaper
+South America,Argentina,Télam,Buenos Aires,https://www.telam.com.ar,,ES,Argentine news agency
+South America,Brazil,Folha de Sao Paulo,São Paulo,https://www.folha.uol.com.br,,"PT, ES, EN",Major newspaper
+South America,Brazil,O Estado de Sao Paulo,São Paulo,https://www.estadao.com.br,,PT,Major newspaper
+South America,Brazil,Agência Brasil,Brasília,https://agenciabrasil.ebc.com.br,,PT,National news agency
+South America,Chile,El Mercurio,Santiago,https://www.emol.com,,ES,Major newspaper
+South America,Chile,La Tercera,Santiago,https://www.latercera.com,,ES,Major newspaper
+South America,Colombia,El Tiempo,Bogotá,https://www.eltiempo.com,,ES,Major newspaper
+South America,Colombia,Colprensa,Bogotá,https://www.colprensa.com,,ES,Colombian news agency
+South America,Peru,El Comercio,Lima,https://elcomercio.pe,,ES,Major newspaper
+South America,Peru,Andina,Lima,https://andina.pe,,ES,Peruvian news agency
+South America,Ecuador,El Universo,Guayaquil,https://www.eluniverso.com,,ES,Major newspaper
+South America,Ecuador,Andes,Quito,https://www.andes.info.ec,,ES,Ecuadorian news agency
+South America,Bolivia,ABI,La Paz,https://www.abi.bo,,ES,Bolivian news agency
+South America,Uruguay,El País,Montevideo,https://www.elpais.com.uy,,ES,Major newspaper
+South America,Paraguay,ABC Color,Asunción,https://www.abc.com.py,,ES,Major newspaper
+Africa,Eritrea,Tesfa News,N/A,https://tesfanews.net,,"EN, TIG, TIR","State owned (presumably) ""pro-PFDJ"" news outlet"
+Africa,Eritrea,Shabait,Asmara,https://shabait.com,,"EN, TIG, TIR",Official page of the Ministry of Information of Eritrea
+Africa,Nigeria,Federal Radio Corporation of Nigeria,Abuja,https://radionigeria.gov.ng,,EN,State radio of Nigeria
+Africa,Nigeria,News Agency of Nigeria,Abuja,https://nan.ng,,EN,National news agency
+Africa,Sierra Leone,Sierra Leone Telegraph,N/A,https://www.thesierraleonetelegraph.com,,EN,Independent news site
+Africa,Senegal,Dakar Matin,Dakar,https://dakarmatin.com,,FR,Senegalese newspaper of record
+Africa,Senegal,APS,Dakar,https://www.aps.sn,,FR,Senegalese news agency
+Africa,Eswatini,Swazi Observer,Mbabane,http://new.observer.org.sz,,EN,Major newspaper
+Africa,Liberia,Front Page Africa,Monrovia,https://frontpageafricaonline.com,,EN,Online Liberian investigative newspaper
+Africa,Kenya,Daily Nation,Nairobi,https://nation.africa,,EN,"Kenya's ""biggest daily paper"""
+Africa,Uganda,Uganda Monitor,Kampala,https://monitor.co.ug,,EN,Major newspaper
+Africa,South Africa,SAPA,Johannesburg,https://www.sapa.org.za,,"EN, AF",South African Press Association
+Africa,South Africa,Mail & Guardian,Johannesburg,https://mg.co.za,,EN,Independent newspaper
+Africa,Egypt,Middle East News Agency,Cairo,https://www.mena.org.eg,,"AR, EN",State news agency
+Africa,Egypt,Al-Ahram,Cairo,https://www.ahram.org.eg,,"AR, EN",Major newspaper
+Africa,Morocco,Maghreb Arabe Presse,Rabat,https://www.mapnews.ma,,"AR, FR, EN",National news agency
+Africa,Tunisia,Tunis Afrique Presse,Tunis,https://www.tap.info.tn,,"AR, FR, EN",National news agency
+Africa,Algeria,Algerie Presse Service,Algiers,https://www.aps.dz,,"AR, FR, EN",National news agency
+Africa,Libya,LANA,Tripoli,https://www.lana-news.ly,,"AR, EN",Libyan news agency
+Africa,Ghana,Ghana News Agency,Accra,https://gna.org.gh,,EN,National news agency
+Africa,Ethiopia,Ethiopian News Agency,Addis Ababa,https://www.ena.et,,"AM, EN",State news agency
+Africa,Tanzania,Daily News,Dar es Salaam,https://dailynews.co.tz,,"EN, SW",Government newspaper
+Africa,Zimbabwe,Herald,Harare,https://www.herald.co.zw,,EN,Government newspaper
+Africa,Botswana,BOPA,Gaborone,https://www.bopa.co.bw,,EN,Botswana Press Agency
+Africa,Zambia,ZANIS,Lusaka,https://www.zanis.gov.zm,,EN,Zambia News and Information Services
+Oceania,Australia,Australian Broadcasting Corporation,Sydney,https://www.abc.net.au,,EN,Public broadcaster
+Oceania,Australia,Australian Associated Press,Sydney,https://www.aap.com.au,,EN,National news agency
+Oceania,Australia,The Australian,Sydney,https://www.theaustralian.com.au,,EN,National newspaper
+Oceania,New Zealand,New Zealand Herald,Auckland,https://www.nzherald.co.nz,,EN,Major newspaper
+Oceania,New Zealand,NZPA,Wellington,https://www.nzpa.co.nz,,EN,New Zealand Press Association
+Oceania,Fiji,Fiji Broadcasting Corporation,Suva,https://www.fbc.com.fj,,"EN, FJ, HI",National broadcaster
+Oceania,Papua New Guinea,Post-Courier,Port Moresby,https://postcourier.com.pg,,EN,Major newspaper

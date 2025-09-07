@@ -1,0 +1,11 @@
+requests
+beautifulsoup4
+sentence_transformers
+torch
+faiss-cpu
+redis
+regex
+mariadb
+spacy
+aiohttp
+lxml
