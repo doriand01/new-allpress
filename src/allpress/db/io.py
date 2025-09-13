@@ -8,10 +8,11 @@ from allpress.settings import (
     DATABASE_PASSWORD,
     DATABASE_HOST,
     DATABASE_NAME,
-    FAISS_INDEX_PATH
+    FAISS_INDEX_PATH,
 )
 from allpress.util import logging
 from torch.utils.data import Dataset
+from os import path
 
 
 from allpress.exceptions import *
@@ -166,6 +167,9 @@ class PageModel(Model):
 
     def __init__(self, **columns):
         super().__init__(**columns)
+
+        # Creates MD5 hash object to generate a unique UUID for the Page object.
+        # MD5 has a low chance of collisions. Perhaps use a different algorithm in the future?
         hashobj = md5()
         hashobj.update(bytes(str(self.page_text).encode('utf-8')))
         uid = hashobj.hexdigest()
@@ -218,21 +222,38 @@ class NewsSourceModel(Model):
 class VectorDB:
 
     def __init__(self):
-        self.rhet_index = faiss.IndexFlatL2(256)
-        self.sem_index = faiss.IndexFlatL2(256)
+        self.semantic_vectordb_path = path.join(FAISS_INDEX_PATH, 'index_semantic.faiss')
+        self.rhetoric_vectordb_path = path.join(FAISS_INDEX_PATH, 'index_rhetoric.faiss')
+
+        # Loads the faiss vectordb from disk if it exists. Else, it makes a new empty one.
+        self.sem_index = faiss.read_index(self.semantic_vectordb_path) if path.exists(self.semantic_vectordb_path) else faiss.IndexFlatL2(128)
+        self.rhet_index = faiss.read_index(self.rhetoric_vectordb_path) if path.exists(self.rhetoric_vectordb_path) else faiss.IndexFlatL2(256)
 
 
-    def _md5_to_uid(self, hash):
-        faiss_id = int(f'0x{hash[:15]}', 16)
-        redis_cursor.set(str(faiss_id), hash)
-        return faiss_id
+    def insert_vectors(self, embeddings, ids, write_to=None):
 
-    def insert_vectors(self, embeddings):
+        # write_to specifies whether the function is to serialize to the vector db holding the semantic vectors or
+        # rhetorical vectors.
 
-        for embedding in embeddings:
+        current_index_size = self.sem_index.ntotal \
+            if write_to == 'semantic' \
+            else self.rhet_index.ntotal \
+            if write_to == 'rhetoric' \
+            else None
+        new_vec_ids = [i + current_index_size for i in range(len(embeddings))]
+        if write_to == 'semantic':
+            for i in range(len(new_vec_ids)):
+                redis_cursor.hset(name='semantic', key=str(new_vec_ids[i]), value=ids[i])
+            self.sem_index.add(embeddings)
+            faiss.write_index(self.sem_index, self.semantic_vectordb_path)
+        elif write_to == 'rhetoric':
+            for i in range(len(new_vec_ids)):
+                redis_cursor.hset(name='rhetoric', key=str(new_vec_ids[i]), value=ids[i])
+            self.rhet_index.add(embeddings)
+            faiss.write_index(self.rhet_index, self.rhetoric_vectordb_path)
+        else:
+            # Add code for error handling here later
             pass
-            faiss.write_index(self.rhet_index, FAISS_INDEX_PATH.replace('.faiss', '_rhetoric.faiss'))
-            faiss.write_index(self.sem_index, FAISS_INDEX_PATH.replace('.faiss', '_semantic.faiss'))
 
 
 class VectorDataset(Dataset):

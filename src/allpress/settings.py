@@ -1,6 +1,6 @@
 
 CLASSIFICATION_MODELS_PATH = "C:\\Users\\Dorian\\PycharmProjects\\Allpress\\src\\allpress\\models\\autoencoders"
-FAISS_INDEX_PATH = "C:\\Users\\Dorian\\PycharmProjects\\Allpress\\src\\allpress\\models\\faiss\\index.faiss"
+FAISS_INDEX_PATH = "C:\\Users\\Dorian\\PycharmProjects\\Allpress\\src\\allpress\\models\\faiss"
 
 TEMP_TRAINING_VECTOR_PATH = "C:\\Users\\Dorian\\PycharmProjects\\Allpress\\src\\allpress\\models\\temp"
 

@@ -2,18 +2,30 @@ from allpress.config import check_config
 from allpress.db.io import connection, cursor, VectorDB
 from allpress.net import scrape
 from allpress.nlp.encoders import train_semantic_autoencoder, train_rhetorical_autoencoder, load_vectors_in_batches
+from allpress.settings import CLASSIFICATION_MODELS_PATH, FAISS_INDEX_PATH
 
 import torch
 import numpy as np
 import traceback
 
+from random import shuffle # remove later
+from os import path
+
+from allpress.util import EmbeddingResult
+
 cursor.execute('USE test;') # Placeholder name, should be replaced with actual database name
 vector_db = None
+semantic_autoencoder = torch.load(path.join(CLASSIFICATION_MODELS_PATH, 'semantic_model.pth'))
+rhetoric_autoencoder = torch.load(path.join(CLASSIFICATION_MODELS_PATH, 'rhetoric_model.pth'))
 
-from random import shuffle # remove later
+semantic_autoencoder.to('cpu')
+rhetoric_autoencoder.to('cpu')
 
 class CLI:
     def __init__(self):
+        pass
+
+    def parse_arguments(self, command):
         pass
 
     # Add option to enable build_vectors parameter. Set to true by default here for testing.
@@ -24,15 +36,23 @@ class CLI:
         scraper = scrape.Scraper()
         vector_db = VectorDB()
         for source, url in sources[start_from:]:
-            print(f"Scraping {source} from {url}...")
             try:
                 scraped = scraper.scrape(url, iterations=2)
-                print(f"Finished scraping {source}.")
                 for batch in scraped:
+                    # generate_embeddings() returns a tuple containing the semantic, and rhetorical embedddings, as tuples.
+                    # The semantical and rhetorical embedding tuples contain the embedding itself, and the article id of
+                    # the embeddings.
                     embeds = batch.generate_embeddings()
                     pages = batch.serialize()
-                    if build_vectors:
-                        vector_db.insert_vectors(embeds)
+                    semantic_vecs = embeds.semantic[0][0]
+                    semantic_ids = embeds.semantic[0][1]
+                    rhetoric_vecs = embeds.rhetoric[0][0]
+                    rhetoric_ids = embeds.rhetoric[0][1]
+                    with torch.no_grad():
+                        sem_autoencoded = semantic_autoencoder.encode(torch.Tensor(semantic_vecs))
+                        rhet_autoencoded = rhetoric_autoencoder.encode(torch.Tensor(rhetoric_vecs))
+                    vector_db.insert_vectors(sem_autoencoded, semantic_ids, write_to='semantic')
+                    vector_db.insert_vectors(rhet_autoencoded, rhetoric_ids, write_to='rhetoric')
                     for page in pages:
                         try:
                             page.save()

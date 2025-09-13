@@ -13,6 +13,7 @@ import sys
 
 from allpress.db.io import PageModel
 from allpress.settings import TEMP_TRAINING_VECTOR_PATH
+from allpress.util import EmbeddingResult
 
 from torch import Tensor
 
@@ -119,69 +120,51 @@ class ArticleBatch(list):
 
     def embed_rhetorical(self, return_embedding=True):
         embeddings = []
-        rhetoric_path = path.join(TEMP_TRAINING_VECTOR_PATH, 'rhetoric.pth')
 
         # Flatten all masked rhetoric sentences from all articles
         sentences = []
         for article in self:
             for sentence in article.masked_rhetoric:
+                # Appends a tuple containing two objects: A string representation of the sentence to be embedded,
+                # and the UUID of the article it came from.
                 sentences.append((str(sentence), article.id))
-        sentences = [str(sentence) for article in self for sentence in article.masked_rhetoric]
-        total = len(sentences)
-        i = 0
 
-        if not path.exists(rhetoric_path):
-            embeddings.append(embedder.encode(sentences, convert_to_tensor=True, show_progress_bar=True))
-            if not return_embedding:
-                torch.save(torch.stack(embeddings), rhetoric_path)
-            else:
-                return embeddings
-        else:
-            prev_embeddings = torch.load(rhetoric_path)
-            for sentence in sentences:
-                embeddings.append(embedder.encode(sentence, convert_to_tensor=True, show_progress_bar=False))
-                i += 1
-                print_progress(i, total, "Embedding rhetorical sentences")
-            concatenated_tensor = torch.cat((torch.stack(embeddings), prev_embeddings), dim=0)
-            torch.save(concatenated_tensor, rhetoric_path)
+        only_sentences = [sentence[0] for sentence in sentences]
+        article_ids = [sentence[1] for sentence in sentences]
+        embeddings.append(
+            (embedder.encode(only_sentences, convert_to_tensor=True, show_progress_bar=True), article_ids)
+        )
+        return embeddings
 
 
     # Add option to enable or disable return_embedding. Set to true for testing.
     def embed_semantic(self, return_embedding=True):
         embeddings = []
-        semantic_path = path.join(TEMP_TRAINING_VECTOR_PATH, 'semantic.pth')
-
         # Flatten all entities from all articles
         entities = []
+
         for article in self:
+            # Generates a tuple that contains two objects; a string representation of the entity, and the UUID of the
+            # article it came from.
             entities = entities + [(entity, article.id) for entity in article.entities]
-        # Eliminate duplicates by wrapping the entities list in a set, then converting it back to a list.
-        entities = list(set(entities))
+
         total = len(entities)
         i = 0
 
-        if not path.exists(semantic_path) or return_embedding:
-            only_entity_strings = [entity[0] for entity in entities]
-            # entity[0] is the embedding itself, entity[1] is the article id.
-            embeddings.append((sem_embedder.encode(only_entity_strings, convert_to_tensor=False, show_progress_bar=True), [entity[1] for entity in entities]))
-            print_progress(i, total, "Embedding semantic entities")
-            if not return_embedding:
-                torch.save(torch.stack(embeddings), semantic_path)
-            else:
-                return embeddings
-        else:
-            prev_embeddings = torch.load(semantic_path)
-            for entity in entities:
-                with torch.inference_mode():
-                    embeddings.append(sem_embedder.encode(entity, convert_to_tensor=False, show_progress_bar=False))
-                    i += 1
-                    print_progress(i, total, "Embedding semantic entities")
-            concatenated_tensor = torch.cat((torch.stack(embeddings), prev_embeddings), dim=0)
-            torch.save(concatenated_tensor, semantic_path)
+        # Make a list only containing the entity strings for embedding.
+        only_entity_strings = [entity[0] for entity in entities]
+        article_ids = [entity[1] for entity in entities]
+
+        # entity[0] is the embedding itself, entity[1] is the article id.
+        embeddings.append(
+            (sem_embedder.encode(only_entity_strings, convert_to_tensor=False, show_progress_bar=True), article_ids)
+        )
+        return embeddings
 
 
     def generate_embeddings(self):
-
-        return self.embed_semantic(), self.embed_rhetorical()
+        semantic = self.embed_semantic()
+        rhetoric = self.embed_rhetorical()
+        return EmbeddingResult(semantic=semantic, rhetoric=rhetoric)
 
 

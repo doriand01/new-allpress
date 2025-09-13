@@ -1,8 +1,16 @@
-# August 2025
+# September 2025
+
+### 0.4.2a (2025-09-XX)
+
+- `VectorDB._md5_to_uid()` function removed.
+- Scraping, vector and article serialization pipelines updated.
 
 ### 0.4.1a (2025-09-07)
 
 - Begin building pipeline for storage of individual named entities and sentences in the VectorDB.
+
+
+# August 2025
 
 ### 0.4.0a (2025-08-08)
 
