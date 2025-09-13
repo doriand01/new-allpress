@@ -1,6 +1,6 @@
 # September 2025
 
-### 0.4.2a (2025-09-XX)
+### 0.4.2a (2025-09-13)
 
 - `VectorDB._md5_to_uid()` function removed.
 - Scraping, vector and article serialization pipelines updated.
