@@ -5,6 +5,7 @@ from . import exceptions
 from . import nlp
 from . import db
 from . import cli
+from . import types
 
 
 

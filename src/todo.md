@@ -5,14 +5,11 @@
 - 041-005-025: Create command parser for CLI
 - 041-004-024: Create new article search pipeline
 - 041-003-023: Add type hinting
-- 041-002-022: Add full documentation and commentaryhget of codebase
+- 041-002-022: Add full documentation and commentary of codebase
 - 041-001-021: Add logging and remove debug print statements
-- 040-002-020: Properly finish pipeline for new multi-vector representations
 - 040-001-019: Refactor code to support multi-vector representations for documents, instead of single vector
 representations.
-- 033-001-018: Implement proper search function in CLI.
 - 031-001-017: Scraper should respect robots.txt.
-- 030-002-015: Write documentation and type hinting for entire codebase.
 - 023-002-011: Finish refactoring allpress.db.models
 - 023-001-010: Fix primary key issue on article saves.
 - 010-003-003: Bug test scraper
@@ -20,6 +17,7 @@ representations.
 
 ## Completed
 
+- 040-002-020: Properly finish pipeline for new multi-vector representations (0.4.2a)
 - 030-001-014: Begin work on FAISS indexing and searching. (0.3.0a-0.4.0a)
 - 030-003-016: Fixed bug 030-005 
 - 023-004-013: Change rhetorical embedding and semantic embedding calculations. (0.3.0a)
@@ -46,3 +44,6 @@ representations.
 
 
 ## Abandoned
+
+- 030-002-015: Write documentation and type hinting for entire codebase. (Merged into new todos)
+- 033-001-018: Implement proper search function in CLI. (Merged into new todos)

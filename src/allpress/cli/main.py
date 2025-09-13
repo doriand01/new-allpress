@@ -11,7 +11,7 @@ import traceback
 from random import shuffle # remove later
 from os import path
 
-from allpress.util import EmbeddingResult
+from allpress.types import EmbeddingResult
 
 cursor.execute('USE test;') # Placeholder name, should be replaced with actual database name
 vector_db = None

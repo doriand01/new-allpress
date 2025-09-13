@@ -1,5 +1,11 @@
 # September 2025
 
+### 0.4.3a (2025-09-13)
+
+- `allpress.db.models` removed
+- Removed unused class in `allpress.db.search`
+- Finished adding type-hinting for current codebase
+
 ### 0.4.2a (2025-09-13)
 
 - `VectorDB._md5_to_uid()` function removed.

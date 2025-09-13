@@ -13,9 +13,11 @@ from allpress.settings import (
 from allpress.util import logging
 from torch.utils.data import Dataset
 from os import path
+from torch import Tensor
 
 
 from allpress.exceptions import *
+from typing import List, Tuple
 
 import numpy as np
 
@@ -230,7 +232,7 @@ class VectorDB:
         self.rhet_index = faiss.read_index(self.rhetoric_vectordb_path) if path.exists(self.rhetoric_vectordb_path) else faiss.IndexFlatL2(256)
 
 
-    def insert_vectors(self, embeddings, ids, write_to=None):
+    def insert_vectors(self, embeddings: Tensor, ids: list, write_to=None):
 
         # write_to specifies whether the function is to serialize to the vector db holding the semantic vectors or
         # rhetorical vectors.
@@ -254,18 +256,6 @@ class VectorDB:
         else:
             # Add code for error handling here later
             pass
-
-
-class VectorDataset(Dataset):
-    class VectorDataset(Dataset):
-        def __init__(self, data_tensor):
-            self.data = data_tensor
-
-        def __len__(self):
-            return len(self.data)
-
-        def __getitem__(self, idx):
-            return self.data[idx]
 
 
 

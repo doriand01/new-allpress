@@ -13,7 +13,7 @@ import sys
 
 from allpress.db.io import PageModel
 from allpress.settings import TEMP_TRAINING_VECTOR_PATH
-from allpress.util import EmbeddingResult
+from allpress.types import EmbeddingResult
 
 from torch import Tensor
 
