@@ -4,8 +4,6 @@
 
 - 041-005-025: Create command parser for CLI
 - 041-004-024: Create new article search pipeline
-- 041-003-023: Add type hinting
-- 041-002-022: Add full documentation and commentary of codebase
 - 041-001-021: Add logging and remove debug print statements
 - 040-001-019: Refactor code to support multi-vector representations for documents, instead of single vector
 representations.
@@ -17,6 +15,8 @@ representations.
 
 ## Completed
 
+- 041-002-022: Add full documentation and commentary of codebase (0.4.4a)
+- 041-003-023: Add type hinting (0.4.3a)
 - 040-002-020: Properly finish pipeline for new multi-vector representations (0.4.2a)
 - 030-001-014: Begin work on FAISS indexing and searching. (0.3.0a-0.4.0a)
 - 030-003-016: Fixed bug 030-005 

@@ -191,14 +191,12 @@ class PageModel(Model):
 
 class NewsSourceModel(Model):
     """
-    PageModel: is the class which models the `page` table in the MariaDB database. \n
-    The page model contains columns which encapsulate the following data relating to \n
-    each indexed page: its url, the root url of the website, the `<p>` tag data \n
-    contained within the table, the language of the page, and translations for that \n
-    page. It is a child class of the Model class. All Model classes and child classes\n
-    have no publicly accessible functions, only attributes which help Model a row in \n
+    NewsSourceModel: is the class which models the `news_source` table in the MariaDB database.
+    The `news_source` model contains columns which encapsulate the following data relating to
+    each indexed news source: its url, and the name of the news source.
+    It is a child class of the Model class. All Model classes and child classes
+    have no publicly accessible functions, only attributes which help Model a row in
     the database table.
-    \n
     """
     model_name = 'newssource'
 
@@ -212,18 +210,25 @@ class NewsSourceModel(Model):
     ]
 
     def __init__(self, **columns):
+        # The columns kwarg is a dictionary that contains the row and value for that row
+        # for each record in the DB. It is passed to the Model superclass for instantiation.
         super().__init__(**columns)
 
     def __str__(self):
         return f'<{self.url}...>'
 
     def to_dict(self):
+        """Generates a dictionary representation of the current instance of the
+        NewsSourceModel class. A dictionary generator is used to find all attributes"""
         return {k: getattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{k}')
                 for k in self.__class__.column_names}
 
 class VectorDB:
 
     def __init__(self):
+        # VectorDB is an interface to write autoencoded vectors to disk for later retrieval.
+        # The file paths to the semantic and rhetorical db, as well as the faiss databases themselves
+        # (read from disk or created on the spot if it does not exist) are instance attributes.
         self.semantic_vectordb_path = path.join(FAISS_INDEX_PATH, 'index_semantic.faiss')
         self.rhetoric_vectordb_path = path.join(FAISS_INDEX_PATH, 'index_rhetoric.faiss')
 
@@ -237,12 +242,16 @@ class VectorDB:
         # write_to specifies whether the function is to serialize to the vector db holding the semantic vectors or
         # rhetorical vectors.
 
+        # Size of the current faiss db, so the writer knows where to begin counting for mapping vector db indexes
+        # to individual article IDs in redis.
         current_index_size = self.sem_index.ntotal \
             if write_to == 'semantic' \
             else self.rhet_index.ntotal \
             if write_to == 'rhetoric' \
             else None
         new_vec_ids = [i + current_index_size for i in range(len(embeddings))]
+
+        # Map the vector ids to articles in redis, add new embeddings, and write updated faiss db to disk.
         if write_to == 'semantic':
             for i in range(len(new_vec_ids)):
                 redis_cursor.hset(name='semantic', key=str(new_vec_ids[i]), value=ids[i])

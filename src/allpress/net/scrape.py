@@ -8,6 +8,9 @@ from bs4 import BeautifulSoup as Soup
 from allpress.util import logger
 from allpress.nlp.processors import Article, ArticleBatch
 
+# This module contains classes and tools for scraping news sources for articles, and runs heuristics
+# on whether to skip saving articles or to keep scraped pages.
+
 
 class ArticleDetector:
     def __init__(self, confidence_threshold: float = 0.7):
@@ -21,6 +24,8 @@ class ArticleDetector:
         self.confidence_threshold = confidence_threshold
 
     def detect_article(self, url: str, soup: Soup) -> tuple[bool, float]:
+        # Runs several heuristic tests to determine the confidence score of a web page. If the confidence threshold is
+        # not reached,  the page is discarded. Increase the confidence threshold for stricter scraping.
         confidence_score = 0.0
         confidence_score += self._check_year_heuristic(url)
         confidence_score += self._check_article_in_url_heuristic(url)
@@ -79,6 +84,9 @@ class Scraper:
             return False
         base_domain = urlparse(self.starting_url).netloc
         target_domain = urlparse(urljoin(self.starting_url, url)).netloc
+
+        # Boolean that checks if a scraped link redirects away from the website. If the base domain of the link
+        # does not match the target domain, the function returns false.
         return base_domain == target_domain
 
     async def _fetch(self, session, url):
