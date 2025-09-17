@@ -3,5 +3,5 @@
 .venvfuck/
 app.log/
 config.json/
-*.faiss
-*.pth
+./models/faiss/*.faiss
+./models/autencoders/*.pth
