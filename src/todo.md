@@ -2,6 +2,7 @@
 
 ## In Progress
 
+- 044-001-026: Fix bug 040-008
 - 041-005-025: Create command parser for CLI
 - 041-004-024: Create new article search pipeline
 - 041-001-021: Add logging and remove debug print statements
@@ -32,6 +33,8 @@ representations.
 
 ## Bugs
 
+- 044-011: "Invalid parameter number" and "unknown or undefined error code" occurs sometimes when saving pages and 
+causes the program to crash.
 - 041-010: Some articles are too big to fit in a 'text' column in the SQL db. Switch to 'longtext'
 - 041-009: Some websites return empty article batches after scraping
 - 040-008: Using `.to(device)` with torch_directml causes a "Cannot set version counter for inference tensor error"

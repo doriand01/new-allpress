@@ -91,7 +91,7 @@ class Scraper:
 
     async def _fetch(self, session, url):
         try:
-            async with session.get(url, timeout=10) as resp:
+            async with session.get(url, timeout=5) as resp:
                 if resp.status != 200 or 'text/html' not in resp.headers.get('Content-Type', ''):
                     return None
                 text = await resp.text()

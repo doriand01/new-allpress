@@ -39,29 +39,24 @@ redis_cursor = redis.Redis(
 
 class Transactions:
     """
-    Transactions: Helper class to assist in interactions with PostgreSQL \n
-    database. Only contains functions and is not an object on its own.\n
-    \n
-    functions;\n
-    generate_create_table_query(\n
-        self \n
-        table_name: str \n
-        column_names_and_types: dict \n
-        primary_key=None: str \n
-        foreign_key=None: str \n
-        reference_table=None: str \n
-        reference_column=None: str \n
-        ) -> str\n
-    generate_insertion_query(self \n
-        table_name: str, \n
-        column_names=[]: list: \n
-        values=[]: list \n
-        ) -> str:\n
-    move_east(self, value: float, in_='miles')\n
-    move_west(self, value: float, in_='miles')\n
-    move_north(self, value: float, in_='miles')\n
-    move_south(self, value: float, in_='miles')\n
-    clone(self)\n
+    Transactions: Helper class to assist in interactions with SQL
+    database. Only contains functions and is not an object on its own.
+
+    functions;
+    generate_create_table_query(
+        self
+        table_name: str
+        column_names_and_types: dict
+        primary_key=None: str
+        foreign_key=None: str
+        reference_table=None: str
+        reference_column=None: str
+        ) -> str
+    generate_insertion_query(self
+        table_name: str,
+        column_names=[]: list:
+        values=[]: list
+        ) -> str:
     """
 
     @classmethod
@@ -132,6 +127,19 @@ class Model:
         return {k: getattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{k}')
                 for k in self.__class__.column_names}
 
+    def verify_primary_key(self, pk_column_name):
+        primary_key_column = None
+        primary_key_value = None
+        table_name = self.__class__.__name__.lower().replace("model", "")
+        primary_key_select = f'SELECT {primary_key_column} FROM {table_name} WHERE {primary_key_column} = {primary_key_value}'
+        for k, v in self.to_dict().items():
+            if "PRIMARY" in v:
+                primary_key_column = k
+                primary_key_value = getattr(self, pk_column_name)
+                cursor.execute(primary_key_select)
+                primary_key = cursor.fetchone()
+
+
     def save(self):
         """Saves the current instance to the database."""
         # This method should be implemented in subclasses to handle saving logic.
@@ -179,6 +187,11 @@ class PageModel(Model):
 
     def __str__(self):
         return f'<{self.url}...>'
+
+    def save(self):
+        """Saves the current instance to the database."""
+        if self.verify_primary_key('uid'):
+            super().save()
 
     def to_dict(self):
         """Generates a dictionary representation of the current instance of the

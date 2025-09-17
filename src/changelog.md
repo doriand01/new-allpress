@@ -1,5 +1,11 @@
 # September 2025
 
+### 0.4.5a (2025-09-17)
+
+- Bug fixes
+- Start work on primary key verification before article saves.
+- Add faiss and .pth files to gitignore
+
 ### 0.4.4a (2025-09-13)
 
 - Add comments

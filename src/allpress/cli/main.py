@@ -35,36 +35,57 @@ class CLI:
         shuffle(sources) #remove later
         scraper = scrape.Scraper()
         vector_db = VectorDB()
-        for source, url in sources[start_from:]:
-            try:
-                scraped = scraper.scrape(url, iterations=2)
-                for batch in scraped:
-                    # generate_embeddings() returns a tuple containing the semantic, and rhetorical embedddings, as tuples.
-                    # The semantical and rhetorical embedding tuples contain the embedding itself, and the article id of
-                    # the embeddings.
-                    embeds = batch.generate_embeddings()
-                    pages = batch.serialize()
-                    semantic_vecs = embeds.semantic[0][0]
-                    semantic_ids = embeds.semantic[0][1]
-                    rhetoric_vecs = embeds.rhetoric[0][0]
-                    rhetoric_ids = embeds.rhetoric[0][1]
-                    with torch.no_grad():
-                        sem_autoencoded = semantic_autoencoder.encode(torch.Tensor(semantic_vecs))
-                        rhet_autoencoded = rhetoric_autoencoder.encode(torch.Tensor(rhetoric_vecs))
-                    vector_db.insert_vectors(sem_autoencoded, semantic_ids, write_to='semantic')
-                    vector_db.insert_vectors(rhet_autoencoded, rhetoric_ids, write_to='rhetoric')
-                    for page in pages:
-                        try:
-                            page.save()
-                            print(f"Saved article from {page.page_url} to the database.")
-                        except Exception as e:
-                            print(f"Error saving article from {page.page_url}: {e}")
-            except Exception as e:
-                print(f"Failed to scrape {source}: {e}")
-                print(traceback.format_exc())
-        if not sources:
-            print("No sources found.")
-            return
+
+        # Save counters are for debug
+        pages_saved = 0
+        sem_vectors_saved = 0
+        rhetoric_vectors_saved = 0
+        try:
+            for source, url in sources[start_from:]:
+                try:
+                    scraped = scraper.scrape(url, iterations=2)
+                    for batch in scraped:
+                        # generate_embeddings() returns a tuple containing the semantic, and rhetorical embedddings, as tuples.
+                        # The semantical and rhetorical embedding tuples contain the embedding itself, and the article id of
+                        # the embeddings.
+
+                        # Skips embedding and serialization process if batch of articles is empty.
+                        if not batch:
+                            continue
+
+                        # Gather up embeddings and serialize pages.
+                        embeds = batch.generate_embeddings()
+                        pages = batch.serialize()
+                        semantic_vecs = embeds.semantic[0][0]
+                        semantic_ids = embeds.semantic[0][1]
+                        rhetoric_vecs = embeds.rhetoric[0][0]
+                        rhetoric_ids = embeds.rhetoric[0][1]
+
+                        #Autoencode embeddings
+                        with torch.no_grad():
+                            sem_autoencoded = semantic_autoencoder.encode(torch.Tensor(semantic_vecs))
+                            rhet_autoencoded = rhetoric_autoencoder.encode(torch.Tensor(rhetoric_vecs))
+
+                        vector_db.insert_vectors(sem_autoencoded, semantic_ids, write_to='semantic')
+                        sem_vectors_saved += len(sem_autoencoded)
+                        vector_db.insert_vectors(rhet_autoencoded, rhetoric_ids, write_to='rhetoric')
+                        rhetoric_vectors_saved += len(rhet_autoencoded)
+                        print(f"Semantic vectors saved: {len(sem_autoencoded)}")
+                        print(f"Rhetoric vectors saved: {len(rhet_autoencoded)}")
+                        print(f"Site: {url}")
+                        for page in pages:
+                            try:
+                                page.save()
+                                pages_saved += 1 # For debug
+                            except Exception as e:
+                                print(f"Error saving article from {page.page_url}: {e}")
+                except Exception as e:
+                    print(f"Failed to scrape {source}: {e}")
+            if not sources:
+                print("No sources found.")
+                return
+        except Exception:
+            print(f"""Process aborted. Saved {sem_vectors_saved} sem vectors and {rhetoric_vectors_saved} rhetoric vectors across {pages_saved} pages.""")
 
 
     def run(self):
