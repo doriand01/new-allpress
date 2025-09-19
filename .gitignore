@@ -1,7 +1,7 @@
 .venv/
 .venv1/
 .venvfuck/
-src/allpress/app.log
+src/app.log
 src/allpress/config.json
 src/allpress/models/faiss/
 src/allpress/models/autoencoders/
