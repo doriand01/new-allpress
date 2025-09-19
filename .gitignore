@@ -4,4 +4,4 @@
 app.log/
 config.json/
 ./models/faiss/*.faiss
-./models/autencoders/*.pth
+./models/autoncoders/*.pth
