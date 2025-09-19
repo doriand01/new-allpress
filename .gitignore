@@ -1,7 +1,7 @@
 .venv/
 .venv1/
 .venvfuck/
-app.log/
-config.json/
-./models/faiss/*.faiss
-./models/autoncoders/*.pth
+app.log
+config.json
+models/faiss/
+models/autoencoders/
