@@ -5,3 +5,4 @@ src/app.log
 src/allpress/config.json
 src/allpress/models/faiss/
 src/allpress/models/autoencoders/
+src/allpress/models/temp/

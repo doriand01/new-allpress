@@ -1,3 +1,0 @@
-[INFO];13-Sep-25 10:33:56: Loading faiss with AVX2 support.
-[INFO];13-Sep-25 10:33:57: Successfully loaded faiss with AVX2 support.
-[INFO];13-Sep-25 10:33:57: Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.

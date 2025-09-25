@@ -16,6 +16,8 @@ representations.
 
 ## Completed
 
+- 050-002-028: Fixed - 050-012: SSLError and MaxRetryError cause program to crash by adding exception handling
+- 050-001-027: Fixed - 041-009 and 040-007: Some websites return empty article batches after scraping
 - 041-002-022: Add full documentation and commentary of codebase (0.4.4a)
 - 041-003-023: Add type hinting (0.4.3a)
 - 040-002-020: Properly finish pipeline for new multi-vector representations (0.4.2a)
@@ -33,12 +35,11 @@ representations.
 
 ## Bugs
 
+
 - 044-011: "Invalid parameter number" and "unknown or undefined error code" occurs sometimes when saving pages and 
 causes the program to crash.
 - 041-010: Some articles are too big to fit in a 'text' column in the SQL db. Switch to 'longtext'
-- 041-009: Some websites return empty article batches after scraping
 - 040-008: Using `.to(device)` with torch_directml causes a "Cannot set version counter for inference tensor error"
-- 040-007: Some websites return empty list of embeddings.
 - 030-006: Thread pool executor bug at line 73 `_execute_pool()`, TypeError with comparison operator `<=`.
 - 030-004: Scraper fails to redirect away from pages on the same website but different subdomain.
 - 023-003: AttributeErrors on saving to database.

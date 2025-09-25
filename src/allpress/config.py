@@ -7,10 +7,12 @@ from allpress.settings import (
     CONFIG_FILE_PATH,
 )
 
-from allpress.db.io import connection, cursor
-from allpress.db.io import PageModel, NewsSourceModel, Transactions
+from allpress.core.database import DatabaseService
+from allpress.core.models import PageModel, NewsSourceModel
 
 import os
+
+db_service = DatabaseService()
 
 configurations = {
     'is_initialized': True,
@@ -43,7 +45,7 @@ def load_sources_from_csv():
             # The magic numbers presuppose CSV file structure. This should be fixed later.
 
             source = NewsSourceModel(**info)
-            Transactions.insert_row('newssource', source.column_names, list(info.values()))
+            DatabaseService.insert_row('newssource', source.column_names, list(info.values()))
 
 
 class DBSetup:
@@ -57,7 +59,7 @@ class DBSetup:
         :param db_name: Name of the database to check in.
         :return: True if the table exists, False otherwise.
         """
-        cursor.execute(f"""
+        db_service.db.cursor.execute(f"""
         SELECT EXISTS (
             SELECT 1 
             FROM information_schema.tables 
@@ -65,29 +67,29 @@ class DBSetup:
         ) AS table_exists
         """)
 
-        result = cursor.fetchone()[0]
+        result = db_service.db.cursor.fetchone()[0]
         return result == 1
     @staticmethod
     def setup_application_tables():
         # Sets up the tables required for use by the application.
         # First checks if the tables exist, and if not, creates then.
         if not DBSetup._check_table_exists('page'):
-            query = Transactions.generate_create_table_query(
+            query = db_service.generate_create_table_query(
                 table_name=PageModel.model_name,
                 column_names_and_types=PageModel.column_name_type_store,
             )
-            cursor.execute(query)
+            db_service.db.cursor.execute(query)
 
-            connection.commit()
+            db_service.db.connection.commit()
 
         if not DBSetup._check_table_exists('newssource'):
-            query = Transactions.generate_create_table_query(
+            query = db_service.generate_create_table_query(
                 table_name=NewsSourceModel.model_name,
                 column_names_and_types=NewsSourceModel.column_name_type_store,
             )
-            cursor.execute(query)
+            db_service.db.cursor.execute(query)
 
-            connection.commit()
+            db_service.db.connection.commit()
 
             print('Loading sources from CSV file if available.')
             load_sources_from_csv()

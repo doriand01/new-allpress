@@ -1,39 +1,50 @@
 from bs4 import BeautifulSoup as Soup
 from sentence_transformers import SentenceTransformer as Model
 
-import regex
 import spacy
-import io
 import torch
 import torch_directml
-import numpy as np
 from os import cpu_count, path
 from hashlib import md5
-import sys
 
-from allpress.db.io import PageModel
-from allpress.settings import TEMP_TRAINING_VECTOR_PATH
+from allpress.core.models import PageModel
 from allpress.types import EmbeddingResult
 
-from torch import Tensor
 
 device = torch_directml.device()
 
 torch.set_num_threads(cpu_count())
 entity_nlp = spacy.load('xx_ent_wiki_sm')
 sentence_nlp = spacy.load('xx_sent_ud_sm')
-embedder = Model('paraphrase-multilingual-MiniLM-L12-v2')
+rhet_embedder = Model('paraphrase-multilingual-MiniLM-L12-v2')
 sem_embedder = Model('LaBSE')
 
+class Embedder:
+    _instance = None
+    entity_nlp = None
+    sentence_nlp = None
+    rhetoric_embedder = None
+    semantic_embedder = None
 
-def print_progress(current, total, label, bar_len=40):
-    progress = int(bar_len * (current / total))
-    bar = "█" * progress + "░" * (bar_len - progress)
-    percent = (current / total) * 100
-    sys.stdout.write(f"\r{label}: {current}/{total} [{bar}] {percent:5.1f}%")
-    sys.stdout.flush()
-    if current == total:
-        print()
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    @property
+    def process_and_embed_entities(self, text: str):
+
+        if self.semantic_embedder is None:
+            self.semantic_embedder = Model('LaBSE')
+
+        if self.entity_nlp is None:
+            self.entity_nlp = spacy.load('xx_ent_wiki_sm')
+
+        nlp_doc = self.entity_nlp(text)
+        entities = [ent.text for ent in nlp_doc.ents]
+        embeddings = self.semantic_embedder.encode(entities)
+
+        return embeddings
 
 
 class Article:
@@ -42,12 +53,6 @@ class Article:
         paragraphs = self.html.find_all('p')
         text = ' '.join([p.get_text() for p in paragraphs])
         return text.strip()
-
-    def _blobify(self, embedding: Tensor):
-        """Converts a PyTorch tensor to a bytes-like object."""
-        buffer = io.BytesIO()
-        torch.save(embedding, buffer)
-        return buffer.getvalue()
 
     def _split_sentences(self, text):
         """Splits the document text into sentences."""
@@ -132,7 +137,7 @@ class ArticleBatch(list):
         only_sentences = [sentence[0] for sentence in sentences]
         article_ids = [sentence[1] for sentence in sentences]
         embeddings.append(
-            (embedder.encode(only_sentences, convert_to_tensor=True, show_progress_bar=True), article_ids)
+            (rhet_embedder.encode(only_sentences, convert_to_tensor=True, show_progress_bar=True), article_ids)
         )
         return embeddings
 

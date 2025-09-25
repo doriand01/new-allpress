@@ -6,7 +6,7 @@ from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup as Soup
 
 from allpress.util import logger
-from allpress.nlp.processors import Article, ArticleBatch
+from allpress.services.nlp.processors import Article, ArticleBatch
 
 # This module contains classes and tools for scraping news sources for articles, and runs heuristics
 # on whether to skip saving articles or to keep scraped pages.
@@ -150,4 +150,5 @@ class Scraper:
 
             to_scrape = list(new_found_urls - self.scraped_urls)
             logger.info(f"[DONE] Found {len(to_scrape)} new URLs.")
-            yield ArticleBatch(articles)
+            if len(articles) > 0:
+                yield ArticleBatch(articles)

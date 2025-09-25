@@ -1,5 +1,10 @@
 # September 2025
 
+### 0.5.0a (2025-09-24)
+
+- Cleaning up code, separation of concerns
+- Implement use of argparser for proper CLI behavior
+
 ### 0.4.5a (2025-09-17)
 
 - Bug fixes
