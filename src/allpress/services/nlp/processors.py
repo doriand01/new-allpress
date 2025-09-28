@@ -19,34 +19,6 @@ sentence_nlp = spacy.load('xx_sent_ud_sm')
 rhet_embedder = Model('paraphrase-multilingual-MiniLM-L12-v2')
 sem_embedder = Model('LaBSE')
 
-class Embedder:
-    _instance = None
-    entity_nlp = None
-    sentence_nlp = None
-    rhetoric_embedder = None
-    semantic_embedder = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
-    @property
-    def process_and_embed_entities(self, text: str):
-
-        if self.semantic_embedder is None:
-            self.semantic_embedder = Model('LaBSE')
-
-        if self.entity_nlp is None:
-            self.entity_nlp = spacy.load('xx_ent_wiki_sm')
-
-        nlp_doc = self.entity_nlp(text)
-        entities = [ent.text for ent in nlp_doc.ents]
-        embeddings = self.semantic_embedder.encode(entities)
-
-        return embeddings
-
-
 class Article:
 
     def _extract_text(self):

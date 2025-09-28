@@ -1,8 +1,6 @@
 from hashlib import md5
 
-from allpress.core.database import DatabaseService
-
-db_service = DatabaseService()
+from allpress.services.db import db_service
 
 
 class BaseModel:

@@ -1,5 +1,5 @@
-from allpress.core.database import DatabaseService
-from allpress.services.vectors import VectorDB
+from allpress.services.db import db_service
+from allpress.core.nn import VectorDB
 from allpress.services import scrape, nlp
 from allpress.services.search import Searcher
 from allpress.settings import TEMP_TRAINING_VECTOR_PATH, CLASSIFICATION_MODELS_PATH
@@ -19,7 +19,6 @@ rhetoric_temp_path = path.join(TEMP_TRAINING_VECTOR_PATH, "rhetoric.pth")
 semantic_autoencoder_path = path.join(CLASSIFICATION_MODELS_PATH, "semantic_autoencoder.pth")
 rhetoric_autoencoder_path = path.join(CLASSIFICATION_MODELS_PATH, "rhetoric_autoencoder.pth")
 
-db_service = DatabaseService()
 vector_db = VectorDB()
 
 def _build_temp_embed_tensor():

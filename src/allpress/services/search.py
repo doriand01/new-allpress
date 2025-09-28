@@ -1,10 +1,10 @@
-from allpress.core.database import DatabaseService
+from allpress.services.db import db_service
 from allpress.services.nlp.processors import (
     sem_embedder,
     rhet_embedder,
     entity_nlp,
     sentence_nlp)
-from allpress.services.vectors import VectorDB
+from allpress.core.nn import VectorDB
 from allpress.settings import CLASSIFICATION_MODELS_PATH
 
 from os.path import join
@@ -12,7 +12,6 @@ from os.path import join
 import torch
 
 vector_db = VectorDB()
-db_service = DatabaseService()
 
 semantic_autoencoder = torch.load(join(CLASSIFICATION_MODELS_PATH, 'semantic_autoencoder.pth'))
 rhet_autoencoder = torch.load(join(CLASSIFICATION_MODELS_PATH, 'rhetoric_autoencoder.pth'))

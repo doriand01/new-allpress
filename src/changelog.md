@@ -1,5 +1,10 @@
 # September 2025
 
+### 0.5.1a (2025-09-28)
+
+- Refactored code to implement dependency injection of `DatabaseService`
+- `VectorDB` class moved to new `core.nn` module
+
 ### 0.5.0a (2025-09-24)
 
 - Cleaning up code, separation of concerns

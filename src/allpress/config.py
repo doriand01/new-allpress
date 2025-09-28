@@ -7,12 +7,10 @@ from allpress.settings import (
     CONFIG_FILE_PATH,
 )
 
-from allpress.core.database import DatabaseService
+from allpress.services.db import db_service
 from allpress.core.models import PageModel, NewsSourceModel
 
 import os
-
-db_service = DatabaseService()
 
 configurations = {
     'is_initialized': True,
@@ -45,7 +43,7 @@ def load_sources_from_csv():
             # The magic numbers presuppose CSV file structure. This should be fixed later.
 
             source = NewsSourceModel(**info)
-            DatabaseService.insert_row('newssource', source.column_names, list(info.values()))
+            db_service.insert_row('newssource', source.column_names, list(info.values()))
 
 
 class DBSetup:

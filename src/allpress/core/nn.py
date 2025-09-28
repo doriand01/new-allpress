@@ -3,10 +3,8 @@ from os import path
 import faiss
 from torch import Tensor
 
+from allpress.services.db import db_service
 from allpress.settings import FAISS_INDEX_PATH
-from allpress.core.database import DatabaseService
-
-db_service = DatabaseService()
 
 
 class VectorDB:
@@ -51,4 +49,3 @@ class VectorDB:
         else:
             # Add code for error handling here later
             pass
-
