@@ -1,7 +1,9 @@
 from os import path
 
 import faiss
+import numpy as np
 from torch import Tensor
+
 
 from allpress.services.db import db_service
 from allpress.settings import FAISS_INDEX_PATH
@@ -49,3 +51,5 @@ class VectorDB:
         else:
             # Add code for error handling here later
             pass
+
+vector_db = VectorDB()

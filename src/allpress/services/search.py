@@ -1,30 +1,14 @@
 from allpress.services.db import db_service
-from allpress.services.nlp.processors import (
-    sem_embedder,
-    rhet_embedder,
-    entity_nlp,
-    sentence_nlp)
-from allpress.core.nn import VectorDB
+
+from allpress.services.nn import model_manager
+from allpress.core.nn import vector_db
 from allpress.settings import CLASSIFICATION_MODELS_PATH
 
 from os.path import join
 
 import torch
 
-vector_db = VectorDB()
-
-semantic_autoencoder = torch.load(join(CLASSIFICATION_MODELS_PATH, 'semantic_autoencoder.pth'))
-rhet_autoencoder = torch.load(join(CLASSIFICATION_MODELS_PATH, 'rhetoric_autoencoder.pth'))
-
-def _mask_sentences(sentences, entities) -> list[str]:
-
-    for i in range(len(sentences)):
-        for entity in entities:
-            if entity in sentences[i]:
-                sentences[i] = sentences[i].replace(entity, '[MASK]')
-
-    return sentences
-
+from allpress.util import mask_sentences
 
 class Searcher:
 
@@ -33,19 +17,27 @@ class Searcher:
         self.top_2_k = top_2_k
 
     def search(self, query: str):
-        query_entity_doc = entity_nlp(query)
-        query_sentence_doc = sentence_nlp(query)
+
+        with model_manager.get_entity_nlp() as entity_nlp:
+            query_entity_doc = entity_nlp(query)
+
+        with model_manager.get_sentence_nlp() as sentence_nlp:
+            query_sentence_doc = sentence_nlp(query)
 
         query_entities = [ent.text for ent in query_entity_doc.ents]
-        query_sentences = _mask_sentences([sent.text for sent in query_sentence_doc.sents], query_entities)
+        query_sentences = mask_sentences([sent.text for sent in query_sentence_doc.sents], query_entities)
 
-        sem_autoencoded = semantic_autoencoder.encode(
-            torch.tensor(sem_embedder.encode(query_entities))
-        )
+        with model_manager.get_embedders() as embedders:
+            sem_embedder, rhet_embedder = embedders
+            with model_manager.get_autoencoders() as autoencoders:
+                sem_autoencoder, rhet_autoencoder = autoencoders
+                sem_autoencoded = sem_autoencoder.encode(
+                    torch.tensor(sem_embedder.encode(query_entities))
+                )
 
-        rhet_autoencoded = rhet_autoencoder.encode(
-            torch.tensor(rhet_embedder.encode(query_sentences))
-        )
+                rhet_autoencoded = rhet_autoencoder.encode(
+                    torch.tensor(rhet_embedder.encode(query_sentences))
+                )
 
         total_distance_scores_sem = {}
         total_distance_scores_rhet = {}

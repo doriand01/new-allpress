@@ -35,7 +35,7 @@ representations.
 
 ## Bugs
 
-
+- 053-012: Some failed articles do not display error messages in logger.
 - 044-011: "Invalid parameter number" and "unknown or undefined error code" occurs sometimes when saving pages and 
 causes the program to crash.
 - 041-010: Some articles are too big to fit in a 'text' column in the SQL db. Switch to 'longtext'

@@ -34,6 +34,7 @@ class ArticleDetector:
         confidence_score += self._check_metadata_tags(soup)
         confidence_score += self._check_headline_structure(soup)
         confidence_score += self._check_blacklist_url(url)
+        logger.log(f"Detected {confidence_score:.2f}% of {url}", level="debug")
         return confidence_score >= self.confidence_threshold, confidence_score
 
     def _check_year_heuristic(self, url): return 0.25 if any(regex.search(p, url) for p in self.year_url_regexes) else 0.0
@@ -97,7 +98,7 @@ class Scraper:
                 text = await resp.text()
                 return {'url': str(resp.url), 'html': text}
         except Exception as e:
-            logger.warning(f"[FAIL] {url}: {e}")
+            logger.log(f"[FAIL] {url}: {e}",)
             return None
 
     async def _fetch_all(self, urls: list[str]) -> list[dict]:
@@ -120,7 +121,7 @@ class Scraper:
         })
 
         for iteration in range(iterations):
-            logger.info(f"[ITER {iteration+1}] Scraping {len(to_scrape)} URLs")
+            logger.log(f"[ITER {iteration+1}] Scraping {len(to_scrape)} URLs", level="debug")
             raw_responses = loop.run_until_complete(self._fetch_all(to_scrape))
             articles = []
             new_found_urls = set()
@@ -135,11 +136,11 @@ class Scraper:
 
                 is_article, score = self.detector.detect_article(url, soup)
                 if is_article:
-                    logger.debug(f"[ARTICLE] {url} ({score})")
+                    logger.log(f"[ARTICLE] {url} ({score})", level="debug")
                     self.cached_urls.add(url)
                     articles.append(Article(url, soup))
                 else:
-                    logger.debug(f"[SKIP] {url} ({score})")
+                    logger.log(f"[SKIP] {url} ({score})", level="debug")
 
                 links = {
                     urljoin(url, a['href'])
@@ -149,6 +150,6 @@ class Scraper:
                 new_found_urls.update(links)
 
             to_scrape = list(new_found_urls - self.scraped_urls)
-            logger.info(f"[DONE] Found {len(to_scrape)} new URLs.")
+            logger.log(f"[DONE] Found {len(to_scrape)} new URLs.", level="debug")
             if len(articles) > 0:
                 yield ArticleBatch(articles)

@@ -1,5 +1,14 @@
 # September 2025
 
+### 0.5.3a (2025-10-02)
+
+- Removed deprecated module `net`
+- Fixed bug in primary key verification that resulted in no articles being saved to SQL database.
+
+### 0.5.2a (2025-09-28)
+
+- Implement `model_manager` service in new module `services.nn`
+
 ### 0.5.1a (2025-09-28)
 
 - Refactored code to implement dependency injection of `DatabaseService`

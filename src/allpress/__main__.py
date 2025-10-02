@@ -1,9 +1,12 @@
 from allpress import cli
+from allpress.util import logger
 
 import argparse
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CLI tool for allpress')
+
+    parser.add_argument("-v", "--verbose", action="store_true",)
 
     subparsers = parser.add_subparsers(dest='command', required=True)
 
@@ -87,6 +90,8 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+
+    logger.set_verbose(True)
 
     if args.command == "build_temp":
         cli.main._build_temp_embed_tensor()

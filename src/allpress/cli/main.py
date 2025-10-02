@@ -3,6 +3,7 @@ from allpress.core.nn import VectorDB
 from allpress.services import scrape, nlp
 from allpress.services.search import Searcher
 from allpress.settings import TEMP_TRAINING_VECTOR_PATH, CLASSIFICATION_MODELS_PATH
+from allpress.util import check_redis_connection
 
 from urllib3 import exceptions as urllib3_exceptions
 from requests import exceptions as requests_exceptions
@@ -99,6 +100,7 @@ def _train_autoencoders(epochs):
     torch.save(rhetoric_model, rhetoric_autoencoder_path)
 
 def _scrape_sources(shuffle_data: bool, save_vectors: bool, iterations: int):
+    check_redis_connection(db_service)
     db_service.db.cursor.execute("SELECT * FROM newssource;")
     sources = db_service.db.cursor.fetchall()[1:] # Start from 2nd element to exclude label row
     if shuffle_data: shuffle(sources)

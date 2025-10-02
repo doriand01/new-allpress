@@ -9,12 +9,12 @@ from hashlib import md5
 
 from allpress.core.models import PageModel
 from allpress.types import EmbeddingResult
+from allpress.services.nn import model_manager
 
 
 device = torch_directml.device()
 
 torch.set_num_threads(cpu_count())
-entity_nlp = spacy.load('xx_ent_wiki_sm')
 sentence_nlp = spacy.load('xx_sent_ud_sm')
 rhet_embedder = Model('paraphrase-multilingual-MiniLM-L12-v2')
 sem_embedder = Model('LaBSE')
@@ -56,15 +56,16 @@ class Article:
         self.url = url
         self.html = content
         self.raw_text = self._extract_text()
-        self.document = entity_nlp(self.raw_text)
-        self.doc_text = self.document.text
-        self.entities = [ent.text for ent in self.document.ents]
+        with model_manager.get_entity_nlp() as entity_nlp:
+            self.document = entity_nlp(self.raw_text)
+            self.doc_text = self.document.text
+            self.entities = [ent.text for ent in self.document.ents]
         self.sentences = self._split_sentences(self.raw_text)
-        self.entity_string = ' '.join(self.entities)
         self.masked_rhetoric = self._mask_rhetoric_chunks()
         hashobj = md5()
         hashobj.update(bytes(str(self.doc_text).encode('utf-8')))
         self.id = hashobj.hexdigest()
+        del hashobj
 
         self.rhetorical_embedding = None
 
@@ -100,18 +101,19 @@ class ArticleBatch(list):
 
         # Flatten all masked rhetoric sentences from all articles
         sentences = []
-        for article in self:
-            for sentence in article.masked_rhetoric:
-                # Appends a tuple containing two objects: A string representation of the sentence to be embedded,
-                # and the UUID of the article it came from.
-                sentences.append((str(sentence), article.id))
+        with model_manager.get_embedders(embedder='rhetoric') as rhet_embedder:
+            for article in self:
+                for sentence in article.masked_rhetoric:
+                    # Appends a tuple containing two objects: A string representation of the sentence to be embedded,
+                    # and the UUID of the article it came from.
+                    sentences.append((str(sentence), article.id))
 
-        only_sentences = [sentence[0] for sentence in sentences]
-        article_ids = [sentence[1] for sentence in sentences]
-        embeddings.append(
-            (rhet_embedder.encode(only_sentences, convert_to_tensor=True, show_progress_bar=True), article_ids)
-        )
-        return embeddings
+            only_sentences = [sentence[0] for sentence in sentences]
+            article_ids = [sentence[1] for sentence in sentences]
+            embeddings.append(
+                (rhet_embedder.encode(only_sentences, convert_to_tensor=False, show_progress_bar=False), article_ids)
+            )
+            return embeddings
 
 
     # Add option to enable or disable return_embedding. Set to true for testing.
@@ -120,23 +122,24 @@ class ArticleBatch(list):
         # Flatten all entities from all articles
         entities = []
 
-        for article in self:
-            # Generates a tuple that contains two objects; a string representation of the entity, and the UUID of the
-            # article it came from.
-            entities = entities + [(entity, article.id) for entity in article.entities]
+        with model_manager.get_embedders(embedder='semantic') as sem_embedder:
+            for article in self:
+                # Generates a tuple that contains two objects; a string representation of the entity, and the UUID of the
+                # article it came from.
+                entities = entities + [(entity, article.id) for entity in article.entities]
 
-        total = len(entities)
-        i = 0
+            total = len(entities)
+            i = 0
 
-        # Make a list only containing the entity strings for embedding.
-        only_entity_strings = [entity[0] for entity in entities]
-        article_ids = [entity[1] for entity in entities]
+            # Make a list only containing the entity strings for embedding.
+            only_entity_strings = [entity[0] for entity in entities]
+            article_ids = [entity[1] for entity in entities]
 
-        # entity[0] is the embedding itself, entity[1] is the article id.
-        embeddings.append(
-            (sem_embedder.encode(only_entity_strings, convert_to_tensor=False, show_progress_bar=True), article_ids)
-        )
-        return embeddings
+            # entity[0] is the embedding itself, entity[1] is the article id.
+            embeddings.append(
+                (sem_embedder.encode(only_entity_strings, convert_to_tensor=False, show_progress_bar=False), article_ids)
+            )
+            return embeddings
 
 
     def generate_embeddings(self):

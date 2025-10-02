@@ -1,6 +1,7 @@
 from hashlib import md5
 
 from allpress.services.db import db_service
+from allpress.util import logger
 
 
 class BaseModel:
@@ -19,27 +20,28 @@ class BaseModel:
         return {k: getattr(self, f'{self.__class__.__name__.lower().replace("model", "")}_{k}')
                 for k in self.__class__.column_names}
 
-    def verify_primary_key(self, pk_column_name):
-        primary_key_column = None
-        primary_key_value = None
+    def verify_primary_key(self, pk_column_name, pk):
         table_name = self.__class__.__name__.lower().replace("model", "")
-        primary_key_select = f'SELECT {primary_key_column} FROM {table_name} WHERE {primary_key_column} = {primary_key_value}'
-        for k, v in self.to_dict().items():
-            if "PRIMARY" in v:
-                primary_key_column = k
-                primary_key_value = getattr(self, pk_column_name)
-                db_service.db.cursor.execute(primary_key_select)
-                primary_key = db_service.db.cursor.fetchone()
+        primary_key_select = f'SELECT {pk_column_name} FROM {table_name} WHERE {pk_column_name} = "{pk}"'
+        db_service.db.cursor.execute(primary_key_select)
+        primary_key = db_service.db.cursor.fetchone()
+        if primary_key == pk:
+            return False
+        else:
+            return True
 
 
     def save(self):
         """Saves the current instance to the database."""
         # This method should be implemented in subclasses to handle saving logic.
-        cls = self.__class__
-        serializable = self.to_dict()
-        columns = list(serializable.keys())
-        data = list(serializable.values())
-        db_service.insert_row(cls.model_name, columns, data)
+        try:
+            cls = self.__class__
+            serializable = self.to_dict()
+            columns = list(serializable.keys())
+            data = list(serializable.values())
+            db_service.insert_row(cls.model_name, columns, data)
+        except Exception as e:
+            logger.log(f"[FAIL] Failed to save article: {e}", level="error")
 
 
 class PageModel(BaseModel):
@@ -81,7 +83,7 @@ class PageModel(BaseModel):
 
     def save(self):
         """Saves the current instance to the database."""
-        if self.verify_primary_key('uid'):
+        if self.verify_primary_key('uid', self.page_uid):
             super().save()
 
     def to_dict(self):
